@@ -740,13 +740,16 @@
     await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
     try {
       const SCALE = 2;
-      const PAD = 90; // Pixel-Padding um die Card, sicher > Shadow-Blur (60px)
+      const PAD = 32; // dezenter Rand rund um die Card; Border bleibt vollständig im Bild
       const rect = el.getBoundingClientRect();
       const innerW = Math.ceil(rect.width);
       const innerH = Math.ceil(rect.height);
 
       // 1) Element transparent, aber mit zusätzlichem Raum links/oben rendern,
       //    sodass der ganze Box-Shadow im PNG steckt.
+      // Element transparent rendern in einen größeren Canvas — Transform
+      // verschiebt den Inhalt nach innen, sodass der Box-Shadow auf allen
+      // Seiten Platz hat. Layout/Größe selbst bleibt unverändert.
       const dataUrl = await htmlToImage.toPng(el, {
         backgroundColor: null,
         pixelRatio: SCALE,
@@ -755,12 +758,13 @@
         width:  innerW + PAD * 2,
         height: innerH + PAD * 2,
         style: {
-          margin: PAD + 'px',
-          boxSizing: 'border-box',
+          transform: `translate(${PAD}px, ${PAD}px)`,
+          transformOrigin: '0 0',
+          margin: '0',
         },
       });
 
-      // 2) Auf finalen, dunklen Canvas malen — sauberer Hintergrund garantiert.
+      // Finalen Canvas mit sauberem dunklen Hintergrund komponieren.
       const img = await loadImage(dataUrl);
       const canvas = document.createElement('canvas');
       canvas.width = img.naturalWidth;
