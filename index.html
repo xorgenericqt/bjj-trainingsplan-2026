@@ -760,15 +760,10 @@
       if (!blob) throw new Error('Kein Bild generiert');
       const file = new File([blob], 'bjj-heute.png', { type: 'image/png' });
 
-      const slot = getCurrentSlot();
-      const posLabel = POSITIONS[slot.positionKey].label;
-      const url = window.location.href;
-      const shareText = `🥋 BJJ heute: ${posLabel} · ${slot.focus}\n${url}`;
-
       const canShareFiles = navigator.canShare && navigator.canShare({ files: [file] });
       if (canShareFiles) {
         try {
-          await navigator.share({ files: [file], text: shareText, title: 'BJJ Trainingsplan' });
+          await navigator.share({ files: [file] });
           label.textContent = '✓ Geteilt';
           setTimeout(() => { label.textContent = origLabel; btn.disabled = false; }, 1800);
           return;
@@ -781,7 +776,7 @@
         }
       }
 
-      // Fallback: Bild herunterladen + WhatsApp-Web mit Text öffnen
+      // Fallback (Browser ohne File-Share-API): nur Bild herunterladen
       const objUrl = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = objUrl;
@@ -790,8 +785,6 @@
       a.click();
       a.remove();
       setTimeout(() => URL.revokeObjectURL(objUrl), 2000);
-      const waUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
-      window.open(waUrl, '_blank', 'noopener');
       label.textContent = '✓ Bild gespeichert';
       setTimeout(() => { label.textContent = origLabel; btn.disabled = false; }, 2000);
     } catch (e) {
