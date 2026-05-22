@@ -225,6 +225,16 @@
   /* Capture mode: when we screenshot, hide UI chrome we don't want in the image */
   .capturing .share-btn { visibility: hidden; }
 
+  /* Force mobile-shaped layout while capturing the today card */
+  .today.capture-mobile { width: 380px !important; max-width: 380px !important; }
+  .today.capture-mobile .today__inner {
+    grid-template-columns: 1fr !important;
+    padding: 26px 24px !important;
+    gap: 18px !important;
+  }
+  .today.capture-mobile .today__date { text-align: left !important; }
+  .today.capture-mobile .today__position { font-size: 2.6rem !important; }
+
   /* ───── Section ───── */
   section { margin-top: 64px; }
   .section-head {
@@ -714,6 +724,9 @@
     const el = document.getElementById('todayCard');
     const container = document.querySelector('.container');
     container.classList.add('capturing');
+    el.classList.add('capture-mobile');
+    // Doppelter rAF, damit Layout neu berechnet wird, bevor wir messen
+    await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
     const PAD = 36;
     const rect = el.getBoundingClientRect();
     try {
@@ -731,6 +744,7 @@
       });
       return blob;
     } finally {
+      el.classList.remove('capture-mobile');
       container.classList.remove('capturing');
     }
   }
