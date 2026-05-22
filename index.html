@@ -720,29 +720,57 @@
 
   // ───── Boot ─────
   // ───── Share ─────
+  function loadImage(src) {
+    return new Promise((res, rej) => {
+      const i = new Image();
+      i.onload = () => res(i);
+      i.onerror = rej;
+      i.src = src;
+    });
+  }
+  function canvasToBlob(canvas) {
+    return new Promise(res => canvas.toBlob(res, 'image/png', 0.95));
+  }
+
   async function captureTodayCard() {
     const el = document.getElementById('todayCard');
     const container = document.querySelector('.container');
     container.classList.add('capturing');
     el.classList.add('capture-mobile');
-    // Doppelter rAF, damit Layout neu berechnet wird, bevor wir messen
     await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
-    const PAD = 36;
-    const rect = el.getBoundingClientRect();
     try {
-      const blob = await htmlToImage.toBlob(el, {
-        backgroundColor: '#0a0a0f',
-        pixelRatio: 2,
-        cacheBust: true,
-        width:  rect.width  + PAD * 2,
-        height: rect.height + PAD * 2,
+      const SCALE = 2;
+      const PAD = 90; // Pixel-Padding um die Card, sicher > Shadow-Blur (60px)
+      const rect = el.getBoundingClientRect();
+      const innerW = Math.ceil(rect.width);
+      const innerH = Math.ceil(rect.height);
+
+      // 1) Element transparent, aber mit zusätzlichem Raum links/oben rendern,
+      //    sodass der ganze Box-Shadow im PNG steckt.
+      const dataUrl = await htmlToImage.toPng(el, {
+        backgroundColor: null,
+        pixelRatio: SCALE,
+        cacheBust: false,
+        skipFonts: true,
+        width:  innerW + PAD * 2,
+        height: innerH + PAD * 2,
         style: {
-          padding: PAD + 'px',
-          boxSizing: 'content-box',
-          margin: '0',
+          margin: PAD + 'px',
+          boxSizing: 'border-box',
         },
       });
-      return blob;
+
+      // 2) Auf finalen, dunklen Canvas malen — sauberer Hintergrund garantiert.
+      const img = await loadImage(dataUrl);
+      const canvas = document.createElement('canvas');
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#0a0a0f';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0);
+
+      return await canvasToBlob(canvas);
     } finally {
       el.classList.remove('capture-mobile');
       container.classList.remove('capturing');
