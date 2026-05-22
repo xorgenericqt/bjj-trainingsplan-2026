@@ -225,15 +225,22 @@
   /* Capture mode: when we screenshot, hide UI chrome we don't want in the image */
   .capturing .share-btn { visibility: hidden; }
 
-  /* Force mobile-shaped layout while capturing the today card */
+  /* Force a deterministic mobile-shaped layout while capturing the today card.
+     ALLE dynamischen Werte (clamp, vw, rem) müssen hier zu festen Pixeln
+     werden, sonst rechnet html-to-image im foreignObject mit anderen Maßen
+     als das DOM — die Card wird höher und der Bottom-Border abgeschnitten. */
   .today.capture-mobile { width: 380px !important; max-width: 380px !important; }
   .today.capture-mobile .today__inner {
     grid-template-columns: 1fr !important;
-    padding: 26px 24px !important;
-    gap: 18px !important;
+    padding: 24px 22px !important;
+    gap: 14px !important;
   }
-  .today.capture-mobile .today__date { text-align: left !important; }
-  .today.capture-mobile .today__position { font-size: 2.6rem !important; }
+  .today.capture-mobile .today__label   { font-size: 11px !important; margin-bottom: 8px !important; }
+  .today.capture-mobile .today__position{ font-size: 40px !important; margin-bottom: 12px !important; line-height: 1 !important; }
+  .today.capture-mobile .today__meta    { gap: 8px !important; }
+  .today.capture-mobile .today__chip    { font-size: 12px !important; padding: 5px 11px !important; }
+  .today.capture-mobile .today__date    { text-align: left !important; font-size: 13px !important; }
+  .today.capture-mobile .today__date .big { font-size: 22px !important; margin-top: 2px !important; }
 
   /* ───── Section ───── */
   section { margin-top: 64px; }
@@ -740,39 +747,50 @@
     await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
     try {
       const SCALE = 2;
-      const PAD = 32; // dezenter Rand rund um die Card; Border bleibt vollständig im Bild
-      const rect = el.getBoundingClientRect();
-      const innerW = Math.ceil(rect.width);
-      const innerH = Math.ceil(rect.height);
+      const PAD  = 36;
+      const GLOW = 26;
 
-      // 1) Element transparent, aber mit zusätzlichem Raum links/oben rendern,
-      //    sodass der ganze Box-Shadow im PNG steckt.
-      // Element transparent rendern in einen größeren Canvas — Transform
-      // verschiebt den Inhalt nach innen, sodass der Box-Shadow auf allen
-      // Seiten Platz hat. Layout/Größe selbst bleibt unverändert.
+      // Akzentfarbe (= Position-Farbe) aus dem Live-Element ziehen.
+      const cs = getComputedStyle(el);
+      const accent = cs.borderTopColor || cs.borderColor || '#ec4899';
+
+      // 1) Card OHNE Box-Shadow rendern. html-to-image sieht so nur die exakte
+      //    Element-Größe — kein Größen- oder Beschnitt-Mismatch.
       const dataUrl = await htmlToImage.toPng(el, {
         backgroundColor: null,
         pixelRatio: SCALE,
         cacheBust: false,
         skipFonts: true,
-        width:  innerW + PAD * 2,
-        height: innerH + PAD * 2,
         style: {
-          transform: `translate(${PAD}px, ${PAD}px)`,
-          transformOrigin: '0 0',
+          boxShadow: 'none',
+          animation: 'none',
           margin: '0',
         },
       });
 
-      // Finalen Canvas mit sauberem dunklen Hintergrund komponieren.
       const img = await loadImage(dataUrl);
+
+      // 2) Auf größeren, dunklen Canvas komponieren. Glow per Canvas-Shadow,
+      //    der die Alpha-Form des Bilds (abgerundetes Rechteck) übernimmt.
+      const padPx  = PAD  * SCALE;
+      const glowPx = GLOW * SCALE;
       const canvas = document.createElement('canvas');
-      canvas.width = img.naturalWidth;
-      canvas.height = img.naturalHeight;
+      canvas.width  = img.naturalWidth  + padPx * 2;
+      canvas.height = img.naturalHeight + padPx * 2;
       const ctx = canvas.getContext('2d');
       ctx.fillStyle = '#0a0a0f';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(img, 0, 0);
+
+      // Weiter, weicher Glow + engerer, intensiverer Glow.
+      ctx.shadowColor = accent;
+      ctx.shadowBlur  = glowPx * 2;
+      ctx.drawImage(img, padPx, padPx);
+      ctx.shadowBlur  = glowPx;
+      ctx.drawImage(img, padPx, padPx);
+      // Card scharf drüber, damit Inhalt nicht verschwimmt.
+      ctx.shadowColor = 'transparent';
+      ctx.shadowBlur  = 0;
+      ctx.drawImage(img, padPx, padPx);
 
       return await canvasToBlob(canvas);
     } finally {
