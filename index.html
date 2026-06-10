@@ -222,6 +222,114 @@
   .share-btn[disabled] { opacity: 0.7; cursor: progress; }
   .share-btn svg { flex-shrink: 0; }
 
+  /* ───── Technikvorschläge Button ───── */
+  .hero-actions { margin-top: 18px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+  .hero-actions .share-btn { margin-top: 0; }
+  .tech-btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 12px 22px;
+    font-family: inherit; font-size: 14px; font-weight: 600; letter-spacing: 0.01em;
+    color: #fff;
+    background: linear-gradient(135deg,
+      color-mix(in srgb, var(--today-color, #10b981) 70%, #14141e) 0%,
+      color-mix(in srgb, var(--today-color, #10b981) 38%, #10101a) 100%);
+    border: 1px solid color-mix(in srgb, var(--today-color, #10b981) 55%, transparent);
+    border-radius: 999px; cursor: pointer;
+    box-shadow: 0 8px 24px -8px color-mix(in srgb, var(--today-color, #10b981) 55%, transparent), 0 0 0 1px rgba(255,255,255,0.06) inset;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .tech-btn:hover { transform: translateY(-2px); }
+  .tech-btn:active { transform: translateY(0); filter: brightness(0.95); }
+  .tech-btn svg { flex-shrink: 0; }
+
+  /* ───── Technik-Modal ───── */
+  .tech-backdrop {
+    position: fixed; inset: 0; z-index: 100;
+    background: rgba(4,4,9,0.72);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.22s ease;
+  }
+  .tech-backdrop.open { opacity: 1; pointer-events: auto; }
+  .tech-modal {
+    --pos-c: #10b981;
+    width: 100%; max-width: 680px; max-height: 86vh;
+    overflow-y: auto; overscroll-behavior: contain;
+    background: linear-gradient(160deg, rgba(22,22,32,0.97), rgba(12,12,18,0.97));
+    border: 1px solid var(--border-strong);
+    border-radius: 22px;
+    padding: 26px clamp(18px, 3vw, 30px) 22px;
+    transform: translateY(14px) scale(0.985);
+    transition: transform 0.22s ease;
+    box-shadow: var(--shadow-lg);
+  }
+  .tech-backdrop.open .tech-modal { transform: none; }
+  @media (max-width: 720px) {
+    .tech-backdrop { padding: 0; align-items: flex-end; }
+    .tech-modal { max-width: none; max-height: 90vh; border-radius: 22px 22px 0 0; border-bottom: none; }
+  }
+  .tech-modal__head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 6px; }
+  .tech-modal__title { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.02em; color: var(--pos-c); margin: 0; }
+  .tech-close {
+    width: 34px; height: 34px; flex-shrink: 0;
+    display: grid; place-items: center;
+    background: var(--surface-strong); border: 1px solid var(--border);
+    border-radius: 50%; color: var(--text); font-size: 15px; cursor: pointer;
+    transition: background 0.2s ease;
+  }
+  .tech-close:hover { background: rgba(255,255,255,0.12); }
+  .tech-note { font-size: 12px; color: var(--text-faint); margin: 0 0 14px; }
+  .tech-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 18px; }
+  .tech-chip {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 6px 12px; font-family: inherit; font-size: 12px; font-weight: 500;
+    color: var(--text); background: var(--surface); border: 1px solid var(--border);
+    border-radius: 999px; cursor: pointer; transition: all 0.2s ease;
+  }
+  .tech-chip .swatch { width: 8px; height: 8px; border-radius: 50%; background: var(--chip-color); box-shadow: 0 0 6px var(--chip-color); }
+  .tech-chip:hover { border-color: var(--chip-color); }
+  .tech-chip.is-active { border-color: var(--chip-color); background: color-mix(in srgb, var(--chip-color) 14%, transparent); color: #fff; }
+  .tech-group {
+    border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 16px; margin-bottom: 14px; background: var(--surface);
+  }
+  .tech-group.is-today {
+    border-color: var(--pos-c);
+    box-shadow: 0 0 0 1px var(--pos-c), 0 0 22px color-mix(in srgb, var(--pos-c) 30%, transparent);
+    background: color-mix(in srgb, var(--pos-c) 5%, var(--surface));
+  }
+  .tech-group__head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+  .tech-group__head h3 { margin: 0; font-size: 1.05rem; font-weight: 700; letter-spacing: -0.01em; }
+  .tech-group.is-today .tech-group__head h3 { color: var(--pos-c); }
+  .tech-group__sub { font-size: 12px; color: var(--text-faint); }
+  .tech-now {
+    margin-left: auto; font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+    color: #fff; background: var(--pos-c);
+    padding: 3px 9px; border-radius: 5px;
+  }
+  .tech-card {
+    background: var(--surface-strong); border: 1px solid var(--border);
+    border-left: 3px solid var(--border-strong);
+    border-radius: var(--radius-sm); padding: 12px 14px; margin-bottom: 8px;
+  }
+  .tech-card:last-child { margin-bottom: 0; }
+  .tech-group.is-today .tech-card { border-left-color: var(--pos-c); background: color-mix(in srgb, var(--pos-c) 7%, var(--surface-strong)); }
+  .tech-card__head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  .tech-card__name { font-size: 14px; font-weight: 600; }
+  .tech-badges { display: inline-flex; gap: 5px; flex-wrap: wrap; }
+  .badge { font-size: 10px; font-weight: 600; letter-spacing: 0.06em; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--border); color: var(--text-dim); }
+  .badge--gi { color: #93c5fd; border-color: rgba(147,197,253,0.4); }
+  .badge--meta { color: #fbbf24; border-color: rgba(251,191,36,0.4); }
+  .tech-card p { margin: 6px 0 8px; font-size: 12.5px; color: var(--text-dim); line-height: 1.5; }
+  .tech-card a { font-size: 12px; font-weight: 600; color: var(--pos-c); text-decoration: none; }
+  .tech-card a:hover { text-decoration: underline; }
+  .tech-foot { margin-top: 4px; font-size: 11px; color: var(--text-faint); text-align: center; }
+  body.tech-open { overflow: hidden; }
+  @media print { .tech-backdrop, .tech-btn { display: none !important; } }
+
   /* Capture mode: when we screenshot, hide UI chrome we don't want in the image */
   .capturing .share-btn { visibility: hidden; }
 
@@ -524,14 +632,23 @@
       </div>
     </div>
 
-    <button class="share-btn" id="shareBtn" type="button" aria-label="Heute teilen">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
-        <polyline points="16 6 12 2 8 6"/>
-        <line x1="12" y1="2" x2="12" y2="15"/>
-      </svg>
-      <span id="shareBtnLabel">Heute teilen</span>
-    </button>
+    <div class="hero-actions">
+      <button class="share-btn" id="shareBtn" type="button" aria-label="Heute teilen">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+          <polyline points="16 6 12 2 8 6"/>
+          <line x1="12" y1="2" x2="12" y2="15"/>
+        </svg>
+        <span id="shareBtnLabel">Heute teilen</span>
+      </button>
+      <button class="tech-btn" id="techBtn" type="button" aria-haspopup="dialog">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+        </svg>
+        Technikvorschläge
+      </button>
+    </div>
   </header>
 
   <section id="legend-section">
@@ -574,6 +691,19 @@
     <span id="footerStamp"></span>
   </footer>
 </main>
+
+<div class="tech-backdrop" id="techBackdrop" role="presentation">
+  <div class="tech-modal" role="dialog" aria-modal="true" aria-labelledby="techTitle">
+    <div class="tech-modal__head">
+      <h2 class="tech-modal__title" id="techTitle">—</h2>
+      <button class="tech-close" id="techClose" type="button" aria-label="Schließen">✕</button>
+    </div>
+    <p class="tech-note" id="techNote"></p>
+    <div class="tech-chips" id="techChips"></div>
+    <div id="techBody"></div>
+    <p class="tech-foot">Kuratierte Auswahl · Links öffnen aktuelle YouTube-Suchen · Stand: Juni 2026</p>
+  </div>
+</div>
 
 <script>
   const POSITIONS = {
@@ -738,7 +868,294 @@
       </div>`).join('');
   }
 
-  // ───── Boot ─────
+  // ───── Technikvorschläge ─────
+  // Datenbank: 7 Positionen × 3 Phasen. Felder pro Technik:
+  // n = Name (engl. Standardbegriff), lvl = 1 Basis / 2 Fortgeschritten / 3 Advanced,
+  // d = Kurzbeschreibung, q = kuratierte YouTube-Suche (immer aktuell, kein Link-Rot),
+  // gi = nur freitags sichtbar (Gi-Tag), meta = aktuell kompetitiv besonders relevant.
+  const TECH_PHASES = [
+    { key: 'setup',   label: 'Set Up' },
+    { key: 'attack',  label: 'Attack' },
+    { key: 'defense', label: 'Defense / Escape' },
+  ];
+  const FOCUS_TO_PHASE = { 'Set Up': 'setup', 'Attack': 'attack', 'Defense / Escape': 'defense' };
+  const TECH_LEVELS = { 1: 'Basis', 2: 'Fortgeschritten', 3: 'Advanced' };
+
+  const TECHNIQUES = {
+    mount: {
+      setup: { sub: 'Mount halten & verbessern', items: [
+        { n: 'Grapevines & Low Mount', lvl: 1, d: 'Beine einhaken, Hüfte schwer machen — die stabilste Form, den Mount zu halten.', q: 'low mount grapevines control bjj' },
+        { n: 'Technical Mount', lvl: 1, d: 'Wenn der Gegner zur Seite dreht: Knie hinter den Rücken, Position behalten statt verlieren.', q: 'technical mount transition bjj' },
+        { n: 'S-Mount Climb', lvl: 2, d: 'Knie hinters Schulterblatt schieben — öffnet Armbar und Mounted Triangle.', q: 's mount transition armbar setup' },
+        { n: 'Gift Wrap', lvl: 2, d: 'Gegnerischen Arm übers Gesicht fixieren — Kontrolle plus direkte Back- und Choke-Optionen.', q: 'gift wrap from mount back take' },
+        { n: 'High Mount Hand Fighting', lvl: 2, d: 'Mit den Knien zu den Achseln klettern, Arme isolieren — Vorstufe aller Finisher.', q: 'high mount control hand fighting bjj' },
+        { n: 'Anti-Escape Riding', lvl: 3, d: 'Früh auf den Elbow-Knee-Escape reagieren: Bein zurückpummeln, Re-Mount sichern.', q: 'maintain mount against elbow knee escape' },
+      ]},
+      attack: { sub: 'Submissions aus dem Mount', items: [
+        { n: 'Arm Triangle (Kata Gatame)', lvl: 2, d: 'Kopf-Arm-Würger: Arm über die Mittellinie drücken, zur Seite absteigen, zudrücken.', q: 'arm triangle from mount no gi details' },
+        { n: 'S-Mount Armbar', lvl: 2, d: 'Aus dem S-Mount in den Armhebel rotieren — hohe Kontrolle bis zum Finish.', q: 's mount armbar details' },
+        { n: 'No-Gi Ezekiel', lvl: 2, d: 'Würger mit Faust und Unterarm — funktioniert auch ohne Ärmel überraschend gut.', q: 'no gi ezekiel choke from mount' },
+        { n: 'Mounted Triangle', lvl: 2, d: 'Triangle von oben: Arm isolieren, Bein über die Schulter, Winkel schneiden.', q: 'mounted triangle setup no gi' },
+        { n: 'Americana', lvl: 1, d: 'Klassischer Schulterhebel: Handgelenk pinnen, Ellbogen anheben — Basics, die immer gehen.', q: 'americana from mount details' },
+        { n: 'Monoplata', lvl: 3, d: 'Schulterhebel über das eigene Bein, wenn der Gegner den Armbar verteidigt.', q: 'monoplata from mount' },
+        { n: 'Cross Collar Choke', lvl: 1, gi: true, d: 'Der klassische Kragenwürger aus dem Mount — Roger-Gracie-Style.', q: 'cross collar choke from mount roger gracie' },
+      ]},
+      defense: { sub: 'Escapes aus dem Bottom Mount', items: [
+        { n: 'Trap & Roll (Upa)', lvl: 1, d: 'Arm und Bein einfangen, Brücke, rollen — der erste Mount-Escape überhaupt.', q: 'upa trap and roll mount escape' },
+        { n: 'Elbow-Knee Escape', lvl: 1, d: 'Frames bauen, Hüfte raus, Knie einführen — der zuverlässigste Escape auf höherem Level.', q: 'elbow knee mount escape lachlan giles' },
+        { n: 'Heel Drag', lvl: 2, d: 'Mit der Ferse das gegnerische Bein über die Mittellinie ziehen und Half Guard nehmen.', q: 'heel drag mount escape' },
+        { n: 'Back Door Escape', lvl: 2, d: 'Unter dem Gegner nach hinten rausrutschen, wenn er hoch klettert.', q: 'back door mount escape' },
+        { n: 'Frames vs High Mount', lvl: 2, d: 'Früh framen, bevor die Ellbogen oben sind — High-Mount-Prävention.', q: 'high mount escape frames bjj' },
+        { n: 'Turn to Turtle', lvl: 2, d: 'Kontrolliert auf die Knie drehen, wenn Flachbleiben verliert — sauber zur Turtle.', q: 'mount escape turn to turtle' },
+      ]},
+    },
+    sideControl: {
+      setup: { sub: 'Pins & Übergänge', items: [
+        { n: 'Crossface & Underhook', lvl: 1, d: 'Kinn wegdrehen, Hüfte schwer — der Brot-und-Butter-Pin im No-Gi.', q: 'side control crossface underhook pressure' },
+        { n: 'Knee on Belly', lvl: 2, d: 'Mobil bleiben, Reaktionen erzwingen — öffnet Submissions und Mount.', q: 'knee on belly transition attacks' },
+        { n: 'North-South Transition', lvl: 2, d: 'Übergang ans Kopfende — Kimura- und Choke-Zone.', q: 'north south position control' },
+        { n: 'No-Gi Kesa Gatame', lvl: 2, d: 'Scarf Hold mit Underhook statt Kragen — brutal schwer für unten.', q: 'no gi kesa gatame control' },
+        { n: 'Side Control → Mount', lvl: 1, d: 'Knie über die Hüftlinie sliden, Mount sichern.', q: 'side control to mount knee slide' },
+        { n: 'Back Take vs Turn', lvl: 2, d: 'Wenn der Gegner eindreht: Seat Belt greifen, Rücken nehmen.', q: 'back take from side control' },
+      ]},
+      attack: { sub: 'Submissions aus Side Control', items: [
+        { n: 'Americana', lvl: 1, d: 'Figure-Four am Handgelenk, Ellbogen am Boden führen — Klassiker.', q: 'americana from side control' },
+        { n: 'North-South Kimura', lvl: 2, d: 'Arm isolieren, Figure-Four greifen, um den Kopf rotieren.', q: 'kimura from north south position' },
+        { n: 'Arm Triangle', lvl: 2, d: 'Aus dem Pin den Arm über die Mittellinie schieben und absteigen.', q: 'arm triangle from side control' },
+        { n: "D'Arce Choke", lvl: 2, d: 'Arm-in-Würger, wenn der Gegner den Underhook jagt — moderner Dauerbrenner.', q: 'darce choke setup no gi' },
+        { n: 'North-South Choke', lvl: 3, d: 'Marcelo-Klassiker: Kinnlinie finden, locker ansetzen, eng zudrücken.', q: 'north south choke marcelo garcia' },
+        { n: 'Paper Cutter Choke', lvl: 2, gi: true, d: 'Kragenwürger mit dem Unterarm quer — kurz, hässlich, effektiv.', q: 'paper cutter choke from side control' },
+      ]},
+      defense: { sub: 'Escapes & Re-Guard', items: [
+        { n: 'Frames + Hip Escape', lvl: 1, d: 'Frames an Hals und Hüfte, shrimpen, Knie reinbringen — Standard-Escape Nummer eins.', q: 'side control escape frames shrimp reguard' },
+        { n: 'Underhook → Knees', lvl: 1, d: 'Underhook gewinnen, eindrehen, auf die Knie — raus aus dem Pin.', q: 'side control escape underhook turn to knees' },
+        { n: 'Defensive Bottom Posture', lvl: 2, d: 'Ellbogen eng, Kopf schützen — erst überleben, dann entkommen (Priit-Style).', q: 'side control bottom defensive posture priit mihkelson' },
+        { n: 'Buggy Choke', lvl: 3, meta: true, d: 'Angriff als Verteidigung: Triangle-Würger von unten — Meta seit Kade Ruotolo.', q: 'buggy choke from bottom side control' },
+        { n: 'Ghost Escape', lvl: 3, d: 'Über die Schulterachse nach hinten rausrotieren statt klassisch shrimpen.', q: 'ghost escape side control' },
+        { n: 'Knee-Shield Re-Guard', lvl: 1, d: 'Knie zwischen die Körper bringen und sofort die Guard rekonstruieren.', q: 'reguard knee shield from side control' },
+      ]},
+    },
+    guard: {
+      setup: { sub: 'Guard-Aufbau & Grips', items: [
+        { n: 'Closed Guard Posture Break', lvl: 1, d: 'Haltung brechen, Kopf runterziehen — ohne das passiert in der Closed Guard nichts.', q: 'closed guard posture break no gi' },
+        { n: 'Butterfly Guard Setup', lvl: 1, d: 'Aufrecht sitzen, Hooks aktiv, Underhook gewinnen.', q: 'butterfly guard fundamentals no gi' },
+        { n: 'Seated Guard & Wrestle-Up-Grips', lvl: 2, meta: true, d: 'Offene Sitz-Guard mit Collar Tie und 2-on-1 — die moderne No-Gi-Standardguard.', q: 'seated guard wrestle up no gi' },
+        { n: 'K-Guard Entry', lvl: 3, meta: true, d: 'Knie-Schild plus tiefer Beingriff — Tor zu Backside 50/50 und Triangles.', q: 'k guard entry lachlan giles' },
+        { n: 'Half Butterfly', lvl: 2, d: 'Hybrid aus Half Guard und Butterfly — elevationsstark, schwer zu passen.', q: 'half butterfly guard no gi' },
+        { n: 'Collar-Sleeve Guard', lvl: 2, gi: true, d: 'Distanz-Guard mit Kragen- und Ärmelgriff — Triangle- und Omoplata-Maschine.', q: 'collar sleeve guard basics' },
+      ]},
+      attack: { sub: 'Sweeps & Submissions', items: [
+        { n: 'Triangle Choke', lvl: 1, d: 'Arm rein, Arm raus, Winkel schneiden — die wichtigste Guard-Submission.', q: 'triangle choke from guard no gi setup' },
+        { n: 'Armbar from Closed Guard', lvl: 1, d: 'Arm über die Mittellinie ziehen, Hüfte hoch, Bein übers Gesicht.', q: 'armbar from closed guard details' },
+        { n: 'Hip Bump Sweep', lvl: 1, d: 'Aufsetzen, über die Schulter sweepen — kombiniert perfekt mit Guillotine und Kimura.', q: 'hip bump sweep details' },
+        { n: 'Butterfly Sweep', lvl: 1, d: 'Underhook, Hook heben, über die Schulter kippen — Lehrbuch-Sweep.', q: 'butterfly sweep no gi details' },
+        { n: 'Omoplata', lvl: 2, d: 'Schulterhebel mit den Beinen — Sweep und Submission in einem.', q: 'omoplata from guard no gi' },
+        { n: 'Wrestle-Up (Technical Stand-up)', lvl: 2, meta: true, d: 'Aus der Guard in den Single Leg aufstehen — Sweeps durch Wrestling ersetzen.', q: 'wrestle up from guard single leg no gi' },
+        { n: 'Kimura Trap', lvl: 2, d: 'Kimura-Griff als Steuerrad: Sweep, Back Take oder Finish.', q: 'kimura trap from closed guard' },
+      ]},
+      defense: { sub: 'Retention & Re-Guard gegen Passing', items: [
+        { n: 'Guard Retention Fundamentals', lvl: 1, d: 'Beine als Frames, Knie zur Brust, Winkel nehmen statt schieben.', q: 'guard retention fundamentals lachlan giles' },
+        { n: 'vs Body Lock Pass', lvl: 2, meta: true, d: 'Antwort auf DEN Meta-Pass: Knie blocken, Hüfte freikämpfen.', q: 'body lock pass defense no gi' },
+        { n: 'Granby / Inversion', lvl: 3, d: 'Über die Schulter invertieren, um die Beine zurück zwischen die Körper zu bringen.', q: 'granby roll guard retention' },
+        { n: 'vs Leg Drag', lvl: 2, d: 'Füße nie auf eine Seite drücken lassen — sofort re-pummeln.', q: 'leg drag defense guard retention' },
+        { n: 'Stiff Arm Frames', lvl: 2, d: 'Steifer Arm gegen Pressure Passing — Raum erzwingen, Re-Guard.', q: 'stiff arm frame guard retention pressure passing' },
+        { n: 'Turtle Re-Guard', lvl: 2, d: 'Aus der Turtle per Sit-Out oder Granby zurück in die Guard.', q: 'turtle to guard recovery sit out' },
+      ]},
+    },
+    halfGuard: {
+      setup: { sub: 'Strukturen & Entries', items: [
+        { n: 'Z-Guard / Knee Shield', lvl: 1, d: 'Knie quer als Schild — Distanzkontrolle und Sweep-Basis.', q: 'z guard fundamentals craig jones' },
+        { n: 'Underhook & Dogfight', lvl: 1, d: 'Underhook gewinnen, aufdrehen — der Kern des Half-Guard-Spiels.', q: 'half guard underhook dogfight' },
+        { n: 'Deep Half Entry', lvl: 2, d: 'Unter den Gegner tauchen — sein Gewicht arbeitet für dich.', q: 'deep half guard entry' },
+        { n: 'Lockdown', lvl: 2, d: 'Bein-Kontrolle nach 10th-Planet-System — nervig und effektiv.', q: 'lockdown half guard 10th planet' },
+        { n: 'Half Butterfly Hook', lvl: 2, d: 'Innenhaken einbauen für Elevation und Sweep-Power.', q: 'half butterfly hook half guard no gi' },
+        { n: 'Top: Knee Cut Setup', lvl: 1, d: 'Top-Spiel: erst Crossface sichern, dann das Knie durchschneiden.', q: 'knee cut pass half guard details' },
+      ]},
+      attack: { sub: 'Sweeps, Back Takes & Subs', items: [
+        { n: 'Old School Sweep', lvl: 1, d: 'Fuß greifen, tief kommen, über die Basis kippen — Bernardo-Faria-Klassiker.', q: 'old school sweep half guard bernardo faria' },
+        { n: 'Dogfight Back Take', lvl: 2, d: 'Aus dem Dogfight hinter den Gegner rotieren statt nur sweepen.', q: 'back take from dogfight half guard' },
+        { n: 'Electric Chair', lvl: 2, d: 'Aus dem Lockdown: Bein spreizen, sweepen oder direkt finishen.', q: 'electric chair sweep half guard' },
+        { n: 'Waiter Sweep', lvl: 3, d: 'Aus der Deep Half das Bein servieren — elegant und überraschend.', q: 'waiter sweep deep half guard' },
+        { n: 'Kimura von unten', lvl: 2, d: 'Wenn der Gegner die Hand abstützt: Figure-Four greifen und mitnehmen.', q: 'kimura from bottom half guard' },
+        { n: 'Half Butterfly Sweep', lvl: 2, d: 'Mit dem Innenhaken elevieren und über die Schulter kippen.', q: 'half butterfly sweep no gi' },
+      ]},
+      defense: { sub: 'Bottom überleben & Top absichern', items: [
+        { n: 'Crossface vermeiden', lvl: 1, d: 'Kopfposition gewinnen — wer das Gesicht verliert, wird geflacht.', q: 'half guard bottom avoid crossface' },
+        { n: 'Knee Shield Recovery', lvl: 1, d: 'Das Schild zurückkämpfen, bevor der Pass durchläuft.', q: 'recover knee shield half guard' },
+        { n: 'Underhook Re-Pummel', lvl: 1, d: 'Verlorenen Underhook sofort zurückpummeln — nie im Whizzer hängen bleiben.', q: 'pummel for underhook half guard' },
+        { n: 'Re-Guard zu Full Guard', lvl: 2, d: 'Aus der Half zurück in die volle Guard, wenn das Spiel kippt.', q: 'half guard to closed guard recovery' },
+        { n: 'Top: Sweep-Defense', lvl: 2, d: 'Top-Spiel: Basis breit, Underhook-Seite absichern, Gewicht vorn.', q: 'defending half guard sweeps top pressure' },
+        { n: 'Back-Take-Prävention', lvl: 2, d: 'Wenn der Underhook weg ist: Whizzer tief, Hüfte zurück.', q: 'defending back take from half guard' },
+      ]},
+    },
+    backMount: {
+      setup: { sub: 'Back Takes & Kontrolle', items: [
+        { n: 'Seat Belt & Hooks', lvl: 1, d: 'Ober- und Untergriff plus Hooks — das Fundament jeder Back-Kontrolle.', q: 'back control seat belt hooks fundamentals' },
+        { n: 'Body Triangle', lvl: 2, d: 'Bein-Dreieck um den Körper — kaum zu entkommen, wenn es sitzt.', q: 'body triangle back control details' },
+        { n: 'Chair Sit Back Take', lvl: 2, d: 'Von der Turtle seitlich einsitzen und mitrollen — sauber auf den Rücken.', q: 'chair sit back take from turtle' },
+        { n: 'Rolling Back Take', lvl: 3, meta: true, d: 'Über die Schulter rollen, wenn der Gegner das Knie blockt — Wettkampf-Meta.', q: 'rolling back take no gi' },
+        { n: 'Straight Jacket Hand Fighting', lvl: 2, d: 'Arme systematisch einsammeln und die Verteidigung abbauen (Danaher-System).', q: 'straight jacket system back control danaher' },
+        { n: 'Crab Ride', lvl: 3, meta: true, d: 'Beine als Hooks von hinten — der moderne Weg auf den Rücken.', q: 'crab ride back take no gi' },
+      ]},
+      attack: { sub: 'Finishes vom Rücken', items: [
+        { n: 'Rear Naked Choke (RNC)', lvl: 1, d: 'Der höchstprozentige Finish im Grappling — Arm tief, Kinnlinie gewinnen.', q: 'rear naked choke details danaher' },
+        { n: 'Short Choke', lvl: 2, d: 'Palm-to-Palm-Variante, wenn der zweite Arm nicht reinkommt.', q: 'short choke from back palm to palm' },
+        { n: 'Armbar from Back', lvl: 2, d: 'Wenn die Hände verteidigen: auf den Arm umsteigen.', q: 'armbar from back control' },
+        { n: 'Back Triangle (Sankaku)', lvl: 3, d: 'Bein-Dreieck von hinten — Kontrolle, Würger und Armhebel in einem.', q: 'back triangle sankaku from back control' },
+        { n: 'Twister', lvl: 3, d: '10th-Planet-Klassiker: Wirbelsäulen-Lock aus dem Truck.', q: 'twister submission setup' },
+        { n: 'Bow & Arrow Choke', lvl: 2, gi: true, d: 'Der stärkste Kragenwürger vom Rücken — Bein über die Schulter, ziehen.', q: 'bow and arrow choke details' },
+      ]},
+      defense: { sub: 'Hand Fighting & Escapes', items: [
+        { n: 'Hand Fighting Fundamentals', lvl: 1, d: '2-on-1 am Würgearm — wer die Hände gewinnt, gewinnt den Rücken.', q: 'back control hand fighting defense' },
+        { n: 'Side Scoop Escape', lvl: 2, d: 'Auf die Nicht-Würge-Seite scooten, Schultern Richtung Matte.', q: 'back escape lachlan giles side scoop' },
+        { n: 'Body Triangle Break', lvl: 2, d: 'Das Dreieck am Knöchel attackieren und die Hüfte befreien.', q: 'escaping body triangle back control' },
+        { n: 'Turtle Defense', lvl: 2, d: 'Kompakt bleiben, Ellbogen eng — die Turtle als sichere Zwischenstation.', q: 'turtle position defense priit mihkelson' },
+        { n: 'Kipping Escape', lvl: 3, d: 'Explosiv aufkippen, Hooks abstreifen — modern und effektiv.', q: 'kipping escape back control' },
+        { n: 'Seat-Belt-Prävention', lvl: 1, d: 'Den ersten Griff verweigern — die beste Back-Defense passiert früh.', q: 'defending the seat belt grip back take' },
+      ]},
+    },
+    legLocks: {
+      setup: { sub: 'Entries & Positionen', items: [
+        { n: 'Ashi Garami Basics', lvl: 1, d: 'Außen-Ashi verstehen: Knielinie kontrollieren, Hüfte verbinden.', q: 'ashi garami fundamentals leg locks' },
+        { n: 'SLX Entry', lvl: 1, d: 'Über Single Leg X in die Beine — der sicherste Einstieg ins Leg-Lock-Spiel.', q: 'single leg x guard entry no gi' },
+        { n: 'Inside Sankaku Entries', lvl: 2, meta: true, d: 'Ins Saddle/Honeyhole kommen — die stärkste Heel-Hook-Position.', q: 'inside sankaku saddle entry' },
+        { n: '50/50 Control', lvl: 2, d: 'Beide in derselben Position — wer die Details kennt, gewinnt.', q: '50 50 guard control no gi' },
+        { n: 'K-Guard → Backside 50/50', lvl: 3, meta: true, d: 'Der Wettkampf-Meta-Weg in die Beine seit ADCC 2022+.', q: 'k guard backside 50 50 entry' },
+        { n: 'Leg Pummeling & Inside Position', lvl: 2, d: 'Wer innen gewinnt, gewinnt das Leg-Lock-Spiel.', q: 'inside position leg pummeling lachlan giles' },
+      ]},
+      attack: { sub: 'Finishes an den Beinen', items: [
+        { n: 'Inside Heel Hook', lvl: 2, d: 'Ferse einfangen, Knielinie halten, langsam rotieren — König der Leg Locks.', q: 'inside heel hook from saddle details' },
+        { n: 'Outside Heel Hook', lvl: 2, d: 'Aus 50/50 oder Outside Ashi — Rotation nach außen.', q: 'outside heel hook from 50 50' },
+        { n: 'Straight Ankle Lock', lvl: 1, d: 'Unterschätzter Klassiker — mit Hüftstreckung richtig brutal.', q: 'straight ankle lock no gi details' },
+        { n: 'Kneebar', lvl: 2, d: 'Gestrecktes Knie wie ein Armbar behandeln — Hüfte an Hüfte.', q: 'kneebar setup no gi' },
+        { n: 'Toe Hold', lvl: 2, d: 'Figure-Four am Fuß — schnell, auch als Übergangswaffe.', q: 'toe hold details no gi' },
+        { n: 'Aoki Lock', lvl: 3, d: 'Innerer Straight Ankle mit Reap-Druck — schnell und heimtückisch.', q: 'aoki lock inside ankle' },
+      ]},
+      defense: { sub: 'Escapes & Fersen-Verteidigung', items: [
+        { n: 'Slip the Heel', lvl: 1, d: 'Die Ferse früh freidrehen, bevor der Griff schließt.', q: 'heel hook defense slipping the heel lachlan giles' },
+        { n: 'Hidden Foot / Boot', lvl: 2, d: 'Fuß verstecken und Spannung rausnehmen — Zeit für den Escape kaufen.', q: 'hiding the heel boot heel hook defense' },
+        { n: 'Turning Escape', lvl: 2, d: 'Mit der Rotation gehen statt dagegen — Knielinie klären.', q: 'heel hook escape turn with rotation knee line' },
+        { n: 'Saddle Escape', lvl: 2, d: 'Das Knie aus dem Inside Sankaku ziehen — erst Ferse sichern, dann raus.', q: 'inside sankaku saddle escape clear knee line' },
+        { n: '50/50 Escape', lvl: 2, d: 'Aufstehen, Bein klären, oben bleiben — der sicherste Weg raus.', q: 'escaping 50 50 guard no gi' },
+        { n: 'Straight-Ankle-Defense', lvl: 1, d: 'Boot anziehen, Winkel nehmen, Fuß rausziehen.', q: 'straight ankle lock defense boot' },
+      ]},
+    },
+    standUp: {
+      setup: { sub: 'Stance, Grips & Vorbereitung', items: [
+        { n: 'Stance & Motion', lvl: 1, d: 'Tiefe Haltung, aktive Füße — ohne Stance kein Takedown.', q: 'grappling stance and motion fundamentals' },
+        { n: 'Collar Tie & Inside Control', lvl: 1, d: 'Nacken kontrollieren, Innenposition gewinnen — daraus entsteht alles.', q: 'collar tie inside control wrestling for bjj' },
+        { n: 'Arm Drag', lvl: 1, d: 'Arm über die Mittellinie ziehen — Tor zu Rücken und Single Leg.', q: 'arm drag setup marcelo garcia' },
+        { n: 'Russian Tie (2-on-1)', lvl: 2, d: 'Zwei Hände auf einen Arm — sichere Kontrolle mit vielen Folgen.', q: 'russian tie 2 on 1 wrestling grappling' },
+        { n: 'Snap Down → Front Headlock', lvl: 2, d: 'Kopf runterreißen und die Front-Headlock-Position beziehen.', q: 'snap down to front headlock' },
+        { n: 'Gi Grip Fighting', lvl: 2, gi: true, d: 'Kragen-Ärmel-Griffkampf — wer zuerst sauber greift, wirft.', q: 'judo grip fighting for bjj' },
+      ]},
+      attack: { sub: 'Takedowns & Front-Headlock-Angriffe', items: [
+        { n: 'Double Leg', lvl: 1, d: 'Level Change, Penetration Step, beide Beine — der Klassiker.', q: 'double leg takedown for bjj details' },
+        { n: 'Single Leg', lvl: 1, d: 'Ein Bein greifen, Kopf innen, sauber finishen.', q: 'single leg takedown finishes grappling' },
+        { n: 'Body Lock Takedown', lvl: 2, meta: true, d: 'Über- und Untergriff schließen, Hüfte ran, kippen — ADCC-Meta.', q: 'body lock takedown no gi' },
+        { n: 'Foot Sweeps', lvl: 2, d: 'Timing statt Kraft: Ouchi und Kosoto für Grappler.', q: 'foot sweeps for no gi grappling' },
+        { n: 'Ankle Pick', lvl: 2, d: 'Aus dem Collar Tie zum Knöchel — niedriges Risiko, hoher Ertrag.', q: 'ankle pick takedown for bjj' },
+        { n: 'Front Headlock → Guillotine/Anaconda', lvl: 2, d: 'Aus dem Snap Down direkt würgen statt nur takedownen.', q: 'front headlock attacks guillotine anaconda' },
+        { n: 'Uchi Mata', lvl: 3, gi: true, d: 'Hüftwurf-Klassiker — im Gi-Griffkampf am Freitag trainierbar.', q: 'uchi mata for bjj' },
+      ]},
+      defense: { sub: 'Takedown-Defense & Konter', items: [
+        { n: 'Sprawl', lvl: 1, d: 'Hüfte runter, Beine zurück — die Antwort auf jeden Shot.', q: 'sprawl takedown defense details' },
+        { n: 'Whizzer vs Single', lvl: 2, d: 'Überhaken, Hüfte eindrehen, Bein freikämpfen.', q: 'whizzer defense single leg' },
+        { n: 'Front Headlock Defense', lvl: 2, d: 'Hand lösen, Kopf rausziehen, Winkel laufen.', q: 'front headlock defense escape wrestling' },
+        { n: 'Down Block', lvl: 1, d: 'Tiefe Angriffe mit der Hand blocken und neu sortieren.', q: 'down block low single defense' },
+        { n: 'Guillotine-Defense beim Shot', lvl: 2, d: 'Hand abwehren, Kopf rausziehen, den Shot sauber beenden.', q: 'guillotine defense while wrestling takedown' },
+        { n: 'Body-Lock-Defense', lvl: 2, d: 'Frames an der Hüfte, Untergriff verweigern, Abstand zurückholen.', q: 'body lock takedown defense framing hips' },
+      ]},
+    },
+  };
+
+  function ytLink(q) {
+    return 'https://www.youtube.com/results?search_query=' + encodeURIComponent(q);
+  }
+
+  function renderTechModal(posKey) {
+    const slot = getCurrentSlot();
+    const giDay = slot.dow === 5;
+    const todayPhase = FOCUS_TO_PHASE[slot.focus] || null;
+    const pos = POSITIONS[posKey];
+
+    document.querySelector('.tech-modal').style.setProperty('--pos-c', pos.color);
+    document.getElementById('techTitle').textContent = pos.label;
+    document.getElementById('techNote').textContent = giDay
+      ? 'Gi-Tag (Freitag): Gi-Techniken sind eingeblendet.'
+      : 'No-Gi-Training — Gi-Techniken werden nur freitags eingeblendet.';
+
+    document.getElementById('techChips').innerHTML = Object.entries(POSITIONS).map(([k, p]) =>
+      `<button class="tech-chip ${k === posKey ? 'is-active' : ''}" data-pos="${k}" style="--chip-color:${p.color}" type="button">
+        <span class="swatch"></span>${p.label}
+      </button>`).join('');
+
+    document.getElementById('techBody').innerHTML = TECH_PHASES.map(ph => {
+      const grp = TECHNIQUES[posKey][ph.key];
+      const items = grp.items.filter(t => !t.gi || giDay);
+      const isToday = ph.key === todayPhase;
+      return `<section class="tech-group ${isToday ? 'is-today' : ''}">
+        <header class="tech-group__head">
+          <h3>${ph.label}</h3>
+          <span class="tech-group__sub">${grp.sub}</span>
+          ${isToday ? '<span class="tech-now">Heute im Fokus</span>' : ''}
+        </header>
+        ${items.map(t => `<article class="tech-card">
+          <div class="tech-card__head">
+            <span class="tech-card__name">${t.n}</span>
+            <span class="tech-badges">
+              <span class="badge">${TECH_LEVELS[t.lvl]}</span>
+              ${t.gi ? '<span class="badge badge--gi">Gi</span>' : ''}
+              ${t.meta ? '<span class="badge badge--meta">Meta</span>' : ''}
+            </span>
+          </div>
+          <p>${t.d}</p>
+          <a href="${ytLink(t.q)}" target="_blank" rel="noopener">▶ YouTube-Suche</a>
+        </article>`).join('')}
+      </section>`;
+    }).join('');
+  }
+
+  function openTechModal(posKey) {
+    renderTechModal(posKey);
+    document.getElementById('techBackdrop').classList.add('open');
+    document.body.classList.add('tech-open');
+    document.getElementById('techClose').focus();
+  }
+
+  function closeTechModal() {
+    const bd = document.getElementById('techBackdrop');
+    if (!bd.classList.contains('open')) return;
+    bd.classList.remove('open');
+    document.body.classList.remove('tech-open');
+    const btn = document.getElementById('techBtn');
+    if (btn) btn.focus();
+  }
+
+  function wireTechModal() {
+    document.getElementById('techBtn').addEventListener('click', () => openTechModal(getCurrentSlot().positionKey));
+    document.getElementById('techClose').addEventListener('click', closeTechModal);
+    document.getElementById('techBackdrop').addEventListener('click', e => {
+      if (e.target === e.currentTarget) closeTechModal();
+    });
+    document.getElementById('techChips').addEventListener('click', e => {
+      const b = e.target.closest('[data-pos]');
+      if (b) renderTechModal(b.dataset.pos);
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeTechModal();
+    });
+    // Einfacher Focus-Trap: Tab zirkuliert innerhalb des offenen Modals.
+    document.getElementById('techBackdrop').addEventListener('keydown', e => {
+      if (e.key !== 'Tab') return;
+      const f = [...document.querySelectorAll('#techBackdrop button, #techBackdrop a')].filter(el => el.offsetParent !== null);
+      if (!f.length) return;
+      const first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    });
+  }
+
   // ───── Share ─────
   function loadImage(src) {
     return new Promise((res, rej) => {
@@ -864,6 +1281,7 @@
     renderWeekStruct(slot);
     renderSession();
     document.getElementById('shareBtn').addEventListener('click', shareToday);
+    wireTechModal();
   }
   boot();
 </script>
