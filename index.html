@@ -243,48 +243,73 @@
   .tech-btn:active { transform: translateY(0); filter: brightness(0.95); }
   .tech-btn svg { flex-shrink: 0; }
 
-  /* ───── Technik-Modal ───── */
+  /* ───── Technik-Modal (Premium) ───── */
   .tech-backdrop {
     position: fixed; inset: 0; z-index: 100;
-    background: rgba(4,4,9,0.72);
-    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    --pos-c: #10b981;
+    background:
+      radial-gradient(900px 600px at 50% 30%, color-mix(in srgb, var(--pos-c) 13%, transparent), transparent 70%),
+      rgba(4,4,9,0.78);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
     display: flex; align-items: center; justify-content: center;
-    padding: 24px;
+    padding: 28px;
     opacity: 0; pointer-events: none;
-    transition: opacity 0.22s ease;
+    transition: opacity 0.25s ease;
   }
   .tech-backdrop.open { opacity: 1; pointer-events: auto; }
   .tech-modal {
     --pos-c: #10b981;
-    width: 100%; max-width: 680px; max-height: 86vh;
-    overflow-y: auto; overscroll-behavior: contain;
-    background: linear-gradient(160deg, rgba(22,22,32,0.97), rgba(12,12,18,0.97));
-    border: 1px solid var(--border-strong);
-    border-radius: 22px;
-    padding: 26px clamp(18px, 3vw, 30px) 22px;
-    transform: translateY(14px) scale(0.985);
-    transition: transform 0.22s ease;
-    box-shadow: var(--shadow-lg);
+    position: relative;
+    width: 100%; max-width: 720px; max-height: 88vh;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    background: linear-gradient(170deg, #16161f 0%, #0d0d14 100%);
+    border: 1px solid color-mix(in srgb, var(--pos-c) 25%, rgba(255,255,255,0.1));
+    border-radius: 24px;
+    box-shadow:
+      0 40px 90px -30px rgba(0,0,0,0.85),
+      0 0 60px -18px color-mix(in srgb, var(--pos-c) 45%, transparent);
+    transform: translateY(18px) scale(0.97);
+    opacity: 0;
+    transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.25s ease;
   }
-  .tech-backdrop.open .tech-modal { transform: none; }
-  @media (max-width: 720px) {
-    .tech-backdrop { padding: 0; align-items: flex-end; }
-    .tech-modal { max-width: none; max-height: 90vh; border-radius: 22px 22px 0 0; border-bottom: none; }
+  .tech-backdrop.open .tech-modal { transform: none; opacity: 1; }
+
+  .tech-head {
+    flex-shrink: 0;
+    padding: 22px 26px 0;
+    background: linear-gradient(180deg, color-mix(in srgb, var(--pos-c) 13%, transparent), transparent 90%);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
   }
-  .tech-modal__head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 6px; }
-  .tech-modal__title { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.02em; color: var(--pos-c); margin: 0; }
+  .tech-head__row { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; }
+  .tech-head__eyebrow {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.24em; text-transform: uppercase;
+    color: color-mix(in srgb, var(--pos-c) 80%, #fff);
+    margin-bottom: 6px;
+  }
+  .tech-head__title {
+    margin: 0; font-size: clamp(1.6rem, 4vw, 2.1rem); font-weight: 800;
+    letter-spacing: -0.03em; color: #fff; line-height: 1.05;
+    text-shadow: 0 0 32px color-mix(in srgb, var(--pos-c) 45%, transparent);
+  }
+  .tech-head__ctx { margin-top: 6px; font-size: 12px; color: var(--text-dim); font-family: 'JetBrains Mono', ui-monospace, monospace; }
   .tech-close {
-    width: 34px; height: 34px; flex-shrink: 0;
+    width: 36px; height: 36px; flex-shrink: 0;
     display: grid; place-items: center;
-    background: var(--surface-strong); border: 1px solid var(--border);
-    border-radius: 50%; color: var(--text); font-size: 15px; cursor: pointer;
-    transition: background 0.2s ease;
+    background: rgba(255,255,255,0.06); border: 1px solid var(--border);
+    border-radius: 50%; color: var(--text); cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
   }
-  .tech-close:hover { background: rgba(255,255,255,0.12); }
-  .tech-note { font-size: 12px; color: var(--text-faint); margin: 0 0 14px; }
-  .tech-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 18px; }
+  .tech-close:hover { background: rgba(255,255,255,0.13); transform: rotate(90deg); }
+
+  .tech-chips {
+    display: flex; gap: 6px; overflow-x: auto;
+    padding: 14px 0 12px;
+    scrollbar-width: none;
+  }
+  .tech-chips::-webkit-scrollbar { display: none; }
   .tech-chip {
-    display: inline-flex; align-items: center; gap: 7px;
+    display: inline-flex; align-items: center; gap: 7px; flex-shrink: 0;
     padding: 6px 12px; font-family: inherit; font-size: 12px; font-weight: 500;
     color: var(--text); background: var(--surface); border: 1px solid var(--border);
     border-radius: 999px; cursor: pointer; transition: all 0.2s ease;
@@ -292,14 +317,54 @@
   .tech-chip .swatch { width: 8px; height: 8px; border-radius: 50%; background: var(--chip-color); box-shadow: 0 0 6px var(--chip-color); }
   .tech-chip:hover { border-color: var(--chip-color); }
   .tech-chip.is-active { border-color: var(--chip-color); background: color-mix(in srgb, var(--chip-color) 14%, transparent); color: #fff; }
+
+  .tech-nav { display: flex; gap: 8px; padding: 0 0 14px; }
+  .tech-nav__pill {
+    flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+    padding: 9px 10px; font-family: inherit; font-size: 12.5px; font-weight: 600;
+    color: var(--text-dim);
+    background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+    border-radius: 10px; cursor: pointer; white-space: nowrap;
+    transition: all 0.2s ease;
+  }
+  .tech-nav__pill:hover { color: #fff; border-color: var(--border-strong); }
+  .tech-nav__pill.is-active {
+    color: #fff;
+    background: color-mix(in srgb, var(--pos-c) 16%, transparent);
+    border-color: color-mix(in srgb, var(--pos-c) 55%, transparent);
+  }
+  .tech-nav__pill .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--pos-c); box-shadow: 0 0 8px var(--pos-c);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  .tech-nav__pill .count {
+    font-size: 10.5px; color: var(--text-faint);
+    background: rgba(255,255,255,0.07); padding: 1px 7px; border-radius: 999px;
+  }
+
+  .tech-body {
+    flex: 1; overflow-y: auto; overscroll-behavior: contain;
+    padding: 18px 26px 10px;
+  }
+  .tech-body::-webkit-scrollbar { width: 8px; }
+  .tech-body::-webkit-scrollbar-track { background: transparent; }
+  .tech-body::-webkit-scrollbar-thumb {
+    background: color-mix(in srgb, var(--pos-c) 30%, rgba(255,255,255,0.14));
+    border-radius: 99px;
+  }
+
   .tech-group {
-    border: 1px solid var(--border); border-radius: var(--radius);
-    padding: 16px; margin-bottom: 14px; background: var(--surface);
+    border: 1px solid var(--border); border-radius: 18px;
+    padding: 18px; margin-bottom: 16px;
+    background: rgba(255,255,255,0.025);
   }
   .tech-group.is-today {
-    border-color: var(--pos-c);
-    box-shadow: 0 0 0 1px var(--pos-c), 0 0 22px color-mix(in srgb, var(--pos-c) 30%, transparent);
-    background: color-mix(in srgb, var(--pos-c) 5%, var(--surface));
+    border-color: color-mix(in srgb, var(--pos-c) 70%, transparent);
+    background: color-mix(in srgb, var(--pos-c) 5%, rgba(255,255,255,0.02));
+    box-shadow:
+      0 0 34px -8px color-mix(in srgb, var(--pos-c) 45%, transparent),
+      inset 0 1px 0 rgba(255,255,255,0.05);
   }
   .tech-group__head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
   .tech-group__head h3 { margin: 0; font-size: 1.05rem; font-weight: 700; letter-spacing: -0.01em; }
@@ -310,23 +375,67 @@
     color: #fff; background: var(--pos-c);
     padding: 3px 9px; border-radius: 5px;
   }
+
   .tech-card {
-    background: var(--surface-strong); border: 1px solid var(--border);
-    border-left: 3px solid var(--border-strong);
-    border-radius: var(--radius-sm); padding: 12px 14px; margin-bottom: 8px;
+    background: rgba(255,255,255,0.035);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-left: 3px solid rgba(255,255,255,0.14);
+    border-radius: 14px; padding: 14px 16px; margin-bottom: 10px;
+    transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
   }
   .tech-card:last-child { margin-bottom: 0; }
-  .tech-group.is-today .tech-card { border-left-color: var(--pos-c); background: color-mix(in srgb, var(--pos-c) 7%, var(--surface-strong)); }
+  .tech-card:hover { transform: translateY(-1px); border-color: rgba(255,255,255,0.16); background: rgba(255,255,255,0.05); }
+  .tech-group.is-today .tech-card { border-left-color: var(--pos-c); background: color-mix(in srgb, var(--pos-c) 6%, rgba(255,255,255,0.03)); }
   .tech-card__head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
   .tech-card__name { font-size: 14px; font-weight: 600; }
   .tech-badges { display: inline-flex; gap: 5px; flex-wrap: wrap; }
   .badge { font-size: 10px; font-weight: 600; letter-spacing: 0.06em; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--border); color: var(--text-dim); }
+  .badge--l1 { color: #34d399; border-color: rgba(52,211,153,0.35); }
+  .badge--l2 { color: #fbbf24; border-color: rgba(251,191,36,0.35); }
+  .badge--l3 { color: #f87171; border-color: rgba(248,113,113,0.35); }
   .badge--gi { color: #93c5fd; border-color: rgba(147,197,253,0.4); }
-  .badge--meta { color: #fbbf24; border-color: rgba(251,191,36,0.4); }
-  .tech-card p { margin: 6px 0 8px; font-size: 12.5px; color: var(--text-dim); line-height: 1.5; }
-  .tech-card a { font-size: 12px; font-weight: 600; color: var(--pos-c); text-decoration: none; }
-  .tech-card a:hover { text-decoration: underline; }
-  .tech-foot { margin-top: 4px; font-size: 11px; color: var(--text-faint); text-align: center; }
+  .badge--meta { color: #c084fc; border-color: rgba(192,132,252,0.4); }
+  .tech-card p { margin: 6px 0 0; font-size: 12.5px; color: var(--text-dim); line-height: 1.5; }
+
+  .tech-links { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+  .tech-links a {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 11.5px; font-weight: 600; color: var(--text-dim);
+    padding: 5px 11px; border-radius: 8px;
+    background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+    text-decoration: none; transition: all 0.18s ease;
+  }
+  .tech-links a:hover {
+    color: #fff;
+    border-color: color-mix(in srgb, var(--pos-c) 55%, transparent);
+    background: color-mix(in srgb, var(--pos-c) 12%, transparent);
+  }
+  .tech-links svg { width: 12px; height: 12px; flex-shrink: 0; }
+
+  .tech-foot {
+    flex-shrink: 0;
+    margin-top: 0; /* überschreibt die globale footer-Regel der Seite */
+    display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap;
+    padding: 12px 26px 16px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    font-size: 11px; color: var(--text-faint);
+  }
+
+  @media (max-width: 720px) {
+    .tech-backdrop { padding: 0; align-items: flex-end; }
+    .tech-modal { max-width: none; max-height: 92vh; border-radius: 24px 24px 0 0; border-bottom: none; }
+    .tech-head { padding: 14px 18px 0; }
+    .tech-head::before {
+      content: ''; display: block;
+      width: 42px; height: 4px; border-radius: 99px;
+      background: rgba(255,255,255,0.18);
+      margin: 0 auto 12px;
+    }
+    .tech-body { padding: 14px 16px 8px; }
+    .tech-foot { padding: 10px 18px 14px; }
+    .tech-nav__pill .count { display: none; }
+  }
+
   body.tech-open { overflow: hidden; }
   @media print { .tech-backdrop, .tech-btn { display: none !important; } }
 
@@ -451,7 +560,8 @@
     overflow: hidden;
     transition: transform 0.2s ease, border-color 0.2s ease;
   }
-  .week:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--w-color) 55%, transparent); }
+  .week:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--w-color) 55%, transparent); cursor: pointer; }
+  .week:focus-visible { outline: 2px solid var(--w-color); outline-offset: 2px; }
   .week__num {
     font-size: 10px;
     font-weight: 600;
@@ -694,14 +804,25 @@
 
 <div class="tech-backdrop" id="techBackdrop" role="presentation">
   <div class="tech-modal" role="dialog" aria-modal="true" aria-labelledby="techTitle">
-    <div class="tech-modal__head">
-      <h2 class="tech-modal__title" id="techTitle">—</h2>
-      <button class="tech-close" id="techClose" type="button" aria-label="Schließen">✕</button>
-    </div>
-    <p class="tech-note" id="techNote"></p>
-    <div class="tech-chips" id="techChips"></div>
-    <div id="techBody"></div>
-    <p class="tech-foot">Kuratierte Auswahl · Links öffnen aktuelle YouTube-Suchen · Stand: Juni 2026</p>
+    <header class="tech-head">
+      <div class="tech-head__row">
+        <div class="tech-head__titles">
+          <div class="tech-head__eyebrow">Technikvorschläge</div>
+          <h2 class="tech-head__title" id="techTitle">—</h2>
+          <div class="tech-head__ctx" id="techCtx"></div>
+        </div>
+        <button class="tech-close" id="techClose" type="button" aria-label="Schließen">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M1 1l12 12M13 1L1 13"/></svg>
+        </button>
+      </div>
+      <div class="tech-chips" id="techChips"></div>
+      <nav class="tech-nav" id="techNav" aria-label="Phasen"></nav>
+    </header>
+    <div class="tech-body" id="techBody"></div>
+    <footer class="tech-foot">
+      <span id="techNote"></span>
+      <span>Kuratiert · Stand: Juni 2026</span>
+    </footer>
   </div>
 </div>
 
@@ -819,7 +940,10 @@
         const weeksHTML = monthData.weeks.map((wk, wi) => {
           const p = POSITIONS[wk];
           const isCur = (m === slot.monthIdx && wi === slot.weekIdx);
-          return `<div class="week ${isCur ? 'is-current' : ''}" style="--w-color:${p.color}">
+          return `<div class="week ${isCur ? 'is-current' : ''}" style="--w-color:${p.color}"
+            data-pos="${wk}" data-ctx="${monthData.month} · Woche ${wi + 1}"
+            role="button" tabindex="0"
+            aria-label="Technikvorschläge für ${p.label} (${monthData.month}, Woche ${wi + 1})">
             <div class="week__num">Woche ${wi + 1}</div>
             <div class="week__pos">${p.label}</div>
           </div>`;
@@ -1069,32 +1193,55 @@
     },
   };
 
-  function ytLink(q) {
-    return 'https://www.youtube.com/results?search_query=' + encodeURIComponent(q);
+  // Drei Quellentypen pro Technik — alles Such-Portale, kein Link-Rot möglich:
+  // Videos (YouTube), Instructionals (BJJ Fanatics), Community (r/bjj).
+  const TECH_ICONS = {
+    play: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>',
+    book: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>',
+    chat: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>',
+  };
+
+  function techLinks(t) {
+    const enc = encodeURIComponent(t.q);
+    return [
+      { icon: 'play', label: 'Videos',         url: 'https://www.youtube.com/results?search_query=' + enc },
+      { icon: 'book', label: 'Instructionals', url: 'https://bjjfanatics.com/search?q=' + enc },
+      { icon: 'chat', label: 'Community',      url: 'https://www.reddit.com/r/bjj/search/?q=' + enc + '&restrict_sr=1' },
+    ];
   }
 
-  function renderTechModal(posKey) {
+  function renderTechModal(posKey, ctxLabel) {
     const slot = getCurrentSlot();
     const giDay = slot.dow === 5;
     const todayPhase = FOCUS_TO_PHASE[slot.focus] || null;
     const pos = POSITIONS[posKey];
 
     document.querySelector('.tech-modal').style.setProperty('--pos-c', pos.color);
+    document.getElementById('techBackdrop').style.setProperty('--pos-c', pos.color);
     document.getElementById('techTitle').textContent = pos.label;
+    document.getElementById('techCtx').textContent = ctxLabel || '';
     document.getElementById('techNote').textContent = giDay
       ? 'Gi-Tag (Freitag): Gi-Techniken sind eingeblendet.'
-      : 'No-Gi-Training — Gi-Techniken werden nur freitags eingeblendet.';
+      : 'No-Gi — Gi-Techniken erscheinen nur freitags.';
 
     document.getElementById('techChips').innerHTML = Object.entries(POSITIONS).map(([k, p]) =>
       `<button class="tech-chip ${k === posKey ? 'is-active' : ''}" data-pos="${k}" style="--chip-color:${p.color}" type="button">
         <span class="swatch"></span>${p.label}
       </button>`).join('');
 
+    document.getElementById('techNav').innerHTML = TECH_PHASES.map(ph => {
+      const count = TECHNIQUES[posKey][ph.key].items.filter(t => !t.gi || giDay).length;
+      const isToday = ph.key === todayPhase;
+      return `<button class="tech-nav__pill" data-target="${ph.key}" type="button">
+        ${isToday ? '<span class="dot"></span>' : ''}${ph.label}<span class="count">${count}</span>
+      </button>`;
+    }).join('');
+
     document.getElementById('techBody').innerHTML = TECH_PHASES.map(ph => {
       const grp = TECHNIQUES[posKey][ph.key];
       const items = grp.items.filter(t => !t.gi || giDay);
       const isToday = ph.key === todayPhase;
-      return `<section class="tech-group ${isToday ? 'is-today' : ''}">
+      return `<section class="tech-group ${isToday ? 'is-today' : ''}" id="techgrp-${ph.key}">
         <header class="tech-group__head">
           <h3>${ph.label}</h3>
           <span class="tech-group__sub">${grp.sub}</span>
@@ -1104,23 +1251,54 @@
           <div class="tech-card__head">
             <span class="tech-card__name">${t.n}</span>
             <span class="tech-badges">
-              <span class="badge">${TECH_LEVELS[t.lvl]}</span>
+              <span class="badge badge--l${t.lvl}">${TECH_LEVELS[t.lvl]}</span>
               ${t.gi ? '<span class="badge badge--gi">Gi</span>' : ''}
               ${t.meta ? '<span class="badge badge--meta">Meta</span>' : ''}
             </span>
           </div>
           <p>${t.d}</p>
-          <a href="${ytLink(t.q)}" target="_blank" rel="noopener">▶ YouTube-Suche</a>
+          <div class="tech-links">
+            ${techLinks(t).map(l => `<a href="${l.url}" target="_blank" rel="noopener">${TECH_ICONS[l.icon]}${l.label}</a>`).join('')}
+          </div>
         </article>`).join('')}
       </section>`;
     }).join('');
+
+    document.getElementById('techBody').scrollTop = 0;
+    updateTechNav();
   }
 
-  function openTechModal(posKey) {
-    renderTechModal(posKey);
+  function scrollTechBodyTo(phaseKey, smooth) {
+    const body = document.getElementById('techBody');
+    const grp = document.getElementById('techgrp-' + phaseKey);
+    if (!grp) return;
+    const top = grp.offsetTop - body.offsetTop - 6;
+    if (smooth) body.scrollTo({ top, behavior: 'smooth' });
+    else body.scrollTop = top;
+  }
+
+  function updateTechNav() {
+    const body = document.getElementById('techBody');
+    const probe = body.scrollTop + body.clientHeight * 0.25;
+    let active = TECH_PHASES[0].key;
+    for (const ph of TECH_PHASES) {
+      const grp = document.getElementById('techgrp-' + ph.key);
+      if (grp && grp.offsetTop - body.offsetTop <= probe) active = ph.key;
+    }
+    document.querySelectorAll('.tech-nav__pill').forEach(p =>
+      p.classList.toggle('is-active', p.dataset.target === active));
+  }
+
+  function openTechModal(posKey, opts = {}) {
+    renderTechModal(posKey, opts.ctx);
     document.getElementById('techBackdrop').classList.add('open');
     document.body.classList.add('tech-open');
     document.getElementById('techClose').focus();
+    if (opts.scrollToToday) {
+      const slot = getCurrentSlot();
+      const phaseKey = FOCUS_TO_PHASE[slot.focus];
+      if (phaseKey) setTimeout(() => scrollTechBodyTo(phaseKey, true), 350);
+    }
   }
 
   function closeTechModal() {
@@ -1133,7 +1311,11 @@
   }
 
   function wireTechModal() {
-    document.getElementById('techBtn').addEventListener('click', () => openTechModal(getCurrentSlot().positionKey));
+    document.getElementById('techBtn').addEventListener('click', () => {
+      const slot = getCurrentSlot();
+      const ctx = `${SCHEDULE_2026[slot.monthIdx].month} · Woche ${slot.weekIdx + 1} · aktuelle Woche`;
+      openTechModal(slot.positionKey, { ctx, scrollToToday: true });
+    });
     document.getElementById('techClose').addEventListener('click', closeTechModal);
     document.getElementById('techBackdrop').addEventListener('click', e => {
       if (e.target === e.currentTarget) closeTechModal();
@@ -1141,6 +1323,23 @@
     document.getElementById('techChips').addEventListener('click', e => {
       const b = e.target.closest('[data-pos]');
       if (b) renderTechModal(b.dataset.pos);
+    });
+    document.getElementById('techNav').addEventListener('click', e => {
+      const b = e.target.closest('[data-target]');
+      if (b) scrollTechBodyTo(b.dataset.target, true);
+    });
+    document.getElementById('techBody').addEventListener('scroll', updateTechNav, { passive: true });
+    // Klick auf eine Woche in der Jahresübersicht öffnet die Vorschläge der Position.
+    const quarters = document.getElementById('quarters');
+    quarters.addEventListener('click', e => {
+      const w = e.target.closest('.week[data-pos]');
+      if (w) openTechModal(w.dataset.pos, { ctx: w.dataset.ctx });
+    });
+    quarters.addEventListener('keydown', e => {
+      if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('.week[data-pos]')) {
+        e.preventDefault();
+        openTechModal(e.target.dataset.pos, { ctx: e.target.dataset.ctx });
+      }
     });
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape') closeTechModal();
