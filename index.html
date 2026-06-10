@@ -553,7 +553,7 @@
   <section id="weekstruct-section">
     <div class="section-head">
       <h2>Wochenstruktur</h2>
-      <span class="sub">Innerhalb einer Position-Woche</span>
+      <span class="sub" id="weekstructSub">Rotiert monatlich</span>
     </div>
     <div class="weekstruct" id="weekstruct"></div>
   </section>
@@ -611,18 +611,28 @@
 
   const WEEKDAY_NAMES = ["Sonntag","Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag"];
 
+  // Phasen-Rotation: die Zuordnung Wochentag → Phase springt jeden Monat
+  // eins weiter (3er-Zyklus, wie im Original-Sheet).
+  // Index = monthIdx % 3, Einträge = [Mo/Di, Mi/Do, Fr]
+  const FOCUS_ROTATIONS = [
+    ["Set Up", "Attack", "Defense / Escape"],   // Jan, Apr, Jul, Okt
+    ["Defense / Escape", "Set Up", "Attack"],   // Feb, Mai, Aug, Nov
+    ["Attack", "Defense / Escape", "Set Up"],   // Mär, Jun, Sep, Dez
+  ];
+
   function getCurrentSlot(now = new Date()) {
     const monthIdx = Math.min(11, now.getMonth());
     const dayOfMonth = now.getDate();
     const weekIdx = Math.min(3, Math.floor((dayOfMonth - 1) / 7));
     const positionKey = SCHEDULE_2026[monthIdx].weeks[weekIdx];
     const dow = now.getDay();
-    let focus, focusKey;
-    if (dow === 1 || dow === 2)      { focus = "Set Up";            focusKey = "setup"; }
-    else if (dow === 3 || dow === 4) { focus = "Attack";            focusKey = "attack"; }
-    else if (dow === 5)              { focus = "Defense / Escape";  focusKey = "defense"; }
-    else                              { focus = "Ruhetag / Open Mat"; focusKey = "rest"; }
-    return { monthIdx, weekIdx, positionKey, focus, focusKey, dow, dayOfMonth };
+    const rotation = FOCUS_ROTATIONS[monthIdx % 3];
+    let daySlot = -1;
+    if (dow === 1 || dow === 2)      daySlot = 0;
+    else if (dow === 3 || dow === 4) daySlot = 1;
+    else if (dow === 5)              daySlot = 2;
+    const focus = daySlot >= 0 ? rotation[daySlot] : "Ruhetag / Open Mat";
+    return { monthIdx, weekIdx, positionKey, focus, daySlot, rotation, dow, dayOfMonth };
   }
 
   function fmtDate(d) {
@@ -694,18 +704,21 @@
 
   // ───── Wochenstruktur ─────
   function renderWeekStruct(slot) {
-    const days = [
-      { when: "Montag · Dienstag",   focus: "Set Up",            hint: "Position aufbauen, Eingang etablieren", key: "setup" },
-      { when: "Mittwoch · Donnerstag", focus: "Attack",          hint: "Submissions & Übergänge aus der Position", key: "attack" },
-      { when: "Freitag",              focus: "Defense / Escape", hint: "Verteidigen, befreien, Position zurückgewinnen", key: "defense" },
-    ];
+    const HINTS = {
+      "Set Up":           "Position aufbauen, Eingang etablieren",
+      "Attack":           "Submissions & Übergänge aus der Position",
+      "Defense / Escape": "Verteidigen, befreien, Position zurückgewinnen",
+    };
+    const WHEN = ["Montag · Dienstag", "Mittwoch · Donnerstag", "Freitag"];
     const root = document.getElementById('weekstruct');
-    root.innerHTML = days.map(d => `
-      <div class="day ${d.key === slot.focusKey ? 'is-today' : ''}">
-        <div class="day__when">${d.when}</div>
-        <h3 class="day__focus">${d.focus}</h3>
-        <div class="day__hint">${d.hint}</div>
+    root.innerHTML = WHEN.map((when, i) => `
+      <div class="day ${i === slot.daySlot ? 'is-today' : ''}">
+        <div class="day__when">${when}</div>
+        <h3 class="day__focus">${slot.rotation[i]}</h3>
+        <div class="day__hint">${HINTS[slot.rotation[i]]}</div>
       </div>`).join('');
+    const sub = document.getElementById('weekstructSub');
+    if (sub) sub.textContent = `Rotiert monatlich · aktuell: ${SCHEDULE_2026[slot.monthIdx].month}`;
   }
 
   // ───── Session Timeline ─────
