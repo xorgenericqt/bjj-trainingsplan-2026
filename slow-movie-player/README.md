@@ -121,7 +121,28 @@ Die Botschaft bleibt stehen (E-Ink!), bis man den Film wieder startet:
 ssh pi@slowmovie.local "sudo systemctl start slowmovie"
 ```
 
-## 6. Wie es funktioniert (Kurzfassung)
+## 6. Mehrere Filme (Tarantino-Komplettpaket 🎬)
+
+SlowMovie spielt **automatisch alle Videos im Ordner `Videos/`** nacheinander ab —
+einfach alle Filme dort ablegen. Der Fortschritt wird **pro Film** gespeichert,
+man kann also wechseln und später an derselben Stelle weiterschauen.
+
+- Alle Filme vorher auf 800×480 herunterrechnen (siehe 3.4) — dann braucht jeder
+  Film nur ~400–800 MB, alle 10 Tarantino-Filme passen locker auf eine 32-GB-Karte.
+- Zufällige Reihenfolge statt alphabetisch: `random-file = True` in der Conf.
+- **Gezielt umschalten**: [`switch_movie.sh`](switch_movie.sh) auf den Pi kopieren, dann z. B.:
+
+```bash
+ssh pi@slowmovie.local "~/SlowMovie/switch_movie.sh 'Pulp Fiction'"
+```
+
+Das Skript sucht den Film im Videos-Ordner, trägt ihn in die Conf ein und
+startet den Service neu — das neue Bild erscheint nach wenigen Sekunden.
+
+> Rechenbeispiel: Bei 1 Filmminute pro Tag läuft jeder Film ~4 Monate.
+> Alle 10 Filme hintereinander = ein Geschenk, das **über 3 Jahre** läuft.
+
+## 7. Wie es funktioniert (Kurzfassung)
 
 - SlowMovie (Python) zieht per **ffmpeg** einzelne Frames aus dem Video und
   rendert sie über **Pillow** + **omni-epd** auf das E-Ink-Display.
