@@ -1,0 +1,14 @@
+[Unit]
+Description=SlowMovie Remote Web UI
+After=network-online.target
+
+[Service]
+# Als root, damit "systemctl restart slowmovie" ohne sudo-Konfiguration klappt.
+# Nur im Heimnetz betreiben - die Oberflaeche hat bewusst keinen Login.
+ExecStart=/usr/bin/python3 /home/pi/SlowMovie/webui.py
+WorkingDirectory=/home/pi/SlowMovie
+Restart=on-failure
+User=root
+
+[Install]
+WantedBy=multi-user.target

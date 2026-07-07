@@ -161,6 +161,21 @@ startet den Service neu — das neue Bild erscheint nach wenigen Sekunden.
 > Rechenbeispiel: Bei 1 Filmminute pro Tag läuft jeder Film ~4 Monate.
 > Alle 10 Filme hintereinander = ein Geschenk, das **über 3 Jahre** läuft.
 
+### Weboberfläche fürs Handy 📱
+
+[`webui.py`](webui.py) ist eine Mini-Weboberfläche (nur Python-Standardbibliothek,
+keine Zusatzpakete): Filmliste zum Antippen + Geschwindigkeits-Presets.
+Der Pi hostet sie als Webserver **nur im Heimnetz** auf Port 8080.
+
+```bash
+scp webui.py slowmovie-web.service pi@slowmovie.local:~/SlowMovie/
+ssh pi@slowmovie.local "sudo cp ~/SlowMovie/slowmovie-web.service /etc/systemd/system/ && sudo systemctl enable --now slowmovie-web"
+```
+
+Dann am Handy im Browser öffnen: **`http://slowmovie.local:8080`**
+(als Lesezeichen auf den Homescreen legen → fühlt sich an wie eine App).
+Kein Login — deshalb nicht per Portfreigabe ins Internet stellen.
+
 ## 7. Wie es funktioniert (Kurzfassung)
 
 - SlowMovie (Python) zieht per **ffmpeg** einzelne Frames aus dem Video und
