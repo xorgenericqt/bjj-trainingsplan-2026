@@ -15,11 +15,12 @@ das aussieht wie ein gedruckter Foto-Kunstdruck. Basiert auf dem Open-Source-Pro
 | # | Teil | Link | Preis |
 |---|------|------|-------|
 | 1 | **Waveshare 7,5" ePaper Display HAT V2** (800×480, S/W, SKU 13504) | [Welectron](https://www.welectron.com/Waveshare-13504-75inch-e-Paper-HAT) | 64,90 € |
-| 2 | **Raspberry Pi Zero 2 W** (ohne Header — siehe #3!) | [Welectron](https://www.welectron.com/Raspberry-Pi-Zero-2-W_1) | 19,90 € |
+| 2 | **Raspberry Pi 3 Modell B+** (Header verlötet, kein Zubehör nötig) | [Welectron](https://www.welectron.com/Raspberry-Pi-3-Modell-B_1) | 40,90 € |
+| 2b | *Alternative, falls im Shop bestellbar:* Raspberry Pi Zero 2 W (ohne Header, braucht Hammer Header #3) | [Welectron](https://www.welectron.com/Raspberry-Pi-Zero-2-W_1) | 19,90 € |
 | 4 | Offizielle Raspberry Pi microSD-Karte, **32 GB** wählen | [Welectron](https://www.welectron.com/Offizielle-Raspberry-Pi-microSD-Speicherkarte) | 9,90 € |
 | 5 | Offizielles Raspberry Pi Micro-USB-Netzteil 5,1 V / 2,5 A | [Welectron](https://www.welectron.com/Official-Raspberry-Pi-Power-Supply-microUSB-51V-25A-EU-UK-US-AU) | 9,90 € |
 
-**Zweite Mini-Bestellung (weil Zero 2 nur ohne Header lieferbar ist):**
+**Nur nötig, falls Variante 2b (Zero 2 W) bestellt wird:**
 
 | # | Teil | Link | Preis |
 |---|------|------|-------|
