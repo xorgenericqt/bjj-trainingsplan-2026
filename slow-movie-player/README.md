@@ -8,21 +8,39 @@ das aussieht wie ein gedruckter Foto-Kunstdruck. Basiert auf dem Open-Source-Pro
 
 ---
 
-## 1. Einkaufsliste (sofort bestellen!)
+## 1. Einkaufsliste (Verfügbarkeit geprüft: 07.07.2026)
 
-| # | Teil | Bezugsquelle | Preis ca. |
-|---|------|--------------|-----------|
-| 1 | **Waveshare 7,5" ePaper Display HAT V2** (800×480, S/W, SPI) | [BerryBase](https://www.berrybase.de/7.5-800-480-epaper-display-hat-for-raspberry-pi-v2) oder Amazon.de | 60–70 € |
-| 2 | **Raspberry Pi Zero 2 WH** (WH = mit gelöteter Stiftleiste!) | [BerryBase](https://www.berrybase.de/raspberry-pi-zero-2-wh) | 20–25 € |
-| 3 | microSD-Karte 16–32 GB (Class 10 / A1) | BerryBase / Amazon | ~8 € |
-| 4 | USB-Netzteil 5 V (min. 2 A) + Micro-USB-Kabel | vorhandenes Handynetzteil oder BerryBase | 0–10 € |
-| 5 | Bilderrahmen mit Tiefe, z. B. **IKEA RIBBA 18×24 cm** | IKEA | 8–15 € |
-| 6 | Passepartout, Ausschnitt ca. **163×98 mm** (sichtbare Displayfläche) | Bastelladen / Online-Zuschnitt | 5–10 € |
+**Hauptbestellung — alles bei Welectron auf Lager:**
 
-**Gesamt: ca. 100–130 €** · BerryBase liefert ab Lager in 2–3 Werktagen (4,95 € Versand).
+| # | Teil | Link | Preis |
+|---|------|------|-------|
+| 1 | **Waveshare 7,5" ePaper Display HAT V2** (800×480, S/W, SKU 13504) | [Welectron](https://www.welectron.com/Waveshare-13504-75inch-e-Paper-HAT) | 64,90 € |
+| 2 | **Raspberry Pi Zero 2 W** (ohne Header — siehe #3!) | [Welectron](https://www.welectron.com/Raspberry-Pi-Zero-2-W_1) | 19,90 € |
+| 4 | Offizielle Raspberry Pi microSD-Karte, **32 GB** wählen | [Welectron](https://www.welectron.com/Offizielle-Raspberry-Pi-microSD-Speicherkarte) | 9,90 € |
+| 5 | Offizielles Raspberry Pi Micro-USB-Netzteil 5,1 V / 2,5 A | [Welectron](https://www.welectron.com/Official-Raspberry-Pi-Power-Supply-microUSB-51V-25A-EU-UK-US-AU) | 9,90 € |
 
-> ⚠️ Unbedingt die **„WH"-Variante** des Pi Zero 2 nehmen (Header vorbestückt) —
-> dann muss nichts gelötet werden. Das Display-HAT wird einfach aufgesteckt.
+**Zweite Mini-Bestellung (weil Zero 2 nur ohne Header lieferbar ist):**
+
+| # | Teil | Link | Preis |
+|---|------|------|-------|
+| 3 | **GPIO Hammer Header** (lötfrei, Variante „Male Header") | [buyzero.de](https://buyzero.de/products/gpio-hammer-header-kein-loten-benotigt) | 2,69 € |
+
+**Lokal besorgen:**
+
+| # | Teil | Wo | Preis |
+|---|------|----|-------|
+| 6 | Bilderrahmen mit Tiefe, z. B. **IKEA RIBBA 18×24 cm** | IKEA | 8–15 € |
+| 7 | Passepartout, Ausschnitt ca. **163×98 mm** (sichtbare Displayfläche) | Bastelladen / Online-Zuschnitt | 5–10 € |
+
+**Gesamt: ca. 125–140 €** inkl. Versand.
+
+> ⚠️ **Lieferengpass beim Pi Zero 2 (Stand 07/2026):** Die WH-Variante (mit
+> vorbestücktem Header) war bei BerryBase, Rasppishop, Welectron und Botland
+> ausverkauft; ebenso der Zero 2 W bei BerryBase/Rasppishop/buyzero/Reichelt.
+> Nur **Welectron hatte den Zero 2 W (ohne Header) lagernd**. Der Hammer Header
+> von buyzero wird ohne Löten mit ein paar Hammerschlägen montiert (Anleitung
+> liegt bei). Alternativ: 2×20-Stiftleiste anlöten oder auf Amazon.de nach
+> „Pi Zero 2 WH" (Prime) schauen — dort teurer, aber oft verfügbar.
 
 ## 2. Zeitplan bis zum 18.7.
 
