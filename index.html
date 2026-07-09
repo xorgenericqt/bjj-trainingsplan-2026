@@ -197,6 +197,30 @@
     .today__date { text-align: left; }
   }
 
+  /* ───── Themen des Tages ───── */
+  .today__topics {
+    margin-top: 14px;
+    padding: 10px 12px 11px;
+    border-left: 3px solid var(--today-color, #10b981);
+    background: rgba(255,255,255,0.045);
+    border-radius: 10px;
+    max-width: 560px;
+  }
+  .today__topics-label {
+    display: block;
+    font-size: 9.5px; font-weight: 700;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--text-faint);
+    margin-bottom: 4px;
+  }
+  .today__topics-text {
+    font-size: 13.5px; color: var(--text);
+    line-height: 1.5;
+    white-space: pre-wrap; word-break: break-word;
+  }
+  .today.capture-mobile .today__topics { margin-top: 12px !important; padding: 9px 11px 10px !important; }
+  .today.capture-mobile .today__topics-text { font-size: 12.5px !important; }
+
   /* ───── Share Button ───── */
   .share-btn {
     margin-top: 18px;
@@ -436,6 +460,47 @@
     .tech-nav__pill .count { display: none; }
   }
 
+  /* ───── Share-Vorschau-Modal ───── */
+  .share-modal { max-width: 470px; }
+  .share-body { flex: 1; overflow-y: auto; overscroll-behavior: contain; padding: 18px 26px 6px; }
+  .share-preview { position: relative; overflow: hidden; border-radius: 16px; }
+  .share-preview__scaler { width: 380px; }
+  .share-label {
+    display: block; margin: 16px 0 8px;
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--text-faint);
+  }
+  .share-input {
+    width: 100%; resize: none; box-sizing: border-box;
+    font-family: inherit; font-size: 14px; color: var(--text); line-height: 1.5;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border); border-radius: 12px;
+    padding: 12px 14px; outline: none;
+    transition: border-color 0.2s ease;
+  }
+  .share-input:focus { border-color: color-mix(in srgb, var(--today-color, #10b981) 60%, transparent); }
+  .share-actions {
+    flex-shrink: 0; margin-top: 12px;
+    display: flex; justify-content: flex-end; gap: 10px;
+    padding: 14px 26px 18px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .share-cancel {
+    padding: 11px 18px;
+    font-family: inherit; font-size: 13.5px; font-weight: 600;
+    color: var(--text-dim);
+    background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+    border-radius: 999px; cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .share-cancel:hover { color: #fff; border-color: var(--border-strong); }
+  .share-actions .share-btn { margin-top: 0; }
+  @media (max-width: 720px) {
+    .share-body { padding: 14px 18px 4px; }
+    .share-actions { padding: 12px 18px 16px; }
+  }
+
   body.tech-open { overflow: hidden; }
   @media print { .tech-backdrop, .tech-btn { display: none !important; } }
 
@@ -603,10 +668,21 @@
   /* ───── Wochenstruktur ───── */
   .weekstruct {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
     gap: 16px;
   }
   @media (max-width: 720px) { .weekstruct { grid-template-columns: 1fr; } }
+  .day--mma { border-color: color-mix(in srgb, #f43f5e 35%, var(--border)); }
+  .day--mma .day__focus { color: #f43f5e; }
+  .day__tag {
+    display: inline-block;
+    font-size: 9px; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 2px 7px; border-radius: 5px;
+    margin-left: 8px; vertical-align: 1px;
+  }
+  .day__tag--new { color: #f43f5e; border: 1px solid rgba(244,63,94,0.45); }
+  .day__tag--gi { color: #93c5fd; border: 1px solid rgba(147,197,253,0.4); }
   .day {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -723,7 +799,7 @@
   <header class="hero">
     <span class="hero__eyebrow"><span class="dot" id="heroDot"></span> Live · Jahresplan 2026</span>
     <h1>BJJ Jahresplan<br/>2026.</h1>
-    <p class="lead">Strukturierter Trainingsplan über alle Positionen — eine Position pro Woche, klar nach Set Up · Attack · Defense / Escape gegliedert. Was gerade ansteht, ist automatisch markiert.</p>
+    <p class="lead">Strukturierter Trainingsplan über alle Positionen — eine Position pro Woche (Wechsel immer montags), gegliedert nach Set Up · Attack · Defense / Escape. Dazu montags der neue MMA-Kurs und sonntags eine reguläre No-Gi-Einheit. Was gerade ansteht, ist automatisch markiert.</p>
 
     <div class="today" id="todayCard">
       <div class="today__inner">
@@ -733,6 +809,11 @@
           <div class="today__meta">
             <span class="today__chip">Phase: <strong id="todayFocus">—</strong></span>
             <span class="today__chip" id="todayWeek">—</span>
+            <span class="today__chip" id="todayExtra" hidden></span>
+          </div>
+          <div class="today__topics" id="todayTopics" hidden>
+            <span class="today__topics-label">Themen heute</span>
+            <span class="today__topics-text" id="todayTopicsText"></span>
           </div>
         </div>
         <div class="today__date">
@@ -826,6 +907,39 @@
   </div>
 </div>
 
+<div class="tech-backdrop" id="shareBackdrop" role="presentation">
+  <div class="tech-modal share-modal" role="dialog" aria-modal="true" aria-labelledby="shareTitle">
+    <header class="tech-head">
+      <div class="tech-head__row">
+        <div class="tech-head__titles">
+          <div class="tech-head__eyebrow">Heute teilen</div>
+          <h2 class="tech-head__title" id="shareTitle">Vorschau</h2>
+          <div class="tech-head__ctx" id="shareCtx"></div>
+        </div>
+        <button class="tech-close" id="shareClose" type="button" aria-label="Schließen">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M1 1l12 12M13 1L1 13"/></svg>
+        </button>
+      </div>
+    </header>
+    <div class="share-body">
+      <div class="share-preview" id="sharePreview"></div>
+      <label class="share-label" for="shareTopics">Genaue Themen des Tages (optional)</label>
+      <textarea id="shareTopics" class="share-input" rows="2" maxlength="140" placeholder="z. B. Knee Cut Details + Underhook-Serie"></textarea>
+    </div>
+    <footer class="share-actions">
+      <button class="share-cancel" id="shareCancel" type="button">Abbrechen</button>
+      <button class="share-btn" id="shareConfirm" type="button">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+          <polyline points="16 6 12 2 8 6"/>
+          <line x1="12" y1="2" x2="12" y2="15"/>
+        </svg>
+        <span id="shareConfirmLabel">Bild teilen</span>
+      </button>
+    </footer>
+  </div>
+</div>
+
 <script>
   const POSITIONS = {
     mount:       { label: "Mount",        color: "#ef4444" },
@@ -871,23 +985,53 @@
     ["Attack", "Defense / Escape", "Set Up"],   // Mär, Jun, Sep, Dez
   ];
 
+  const MMA_COLOR = '#f43f5e';
+
+  // Trainingswoche = Mo–So. Das Thema wechselt NUR in der Nacht So→Mo:
+  // Anker ist der Montag der laufenden Woche; Monat/Woche werden vom Anker
+  // abgeleitet, nie vom heutigen Kalendertag.
+  function getTrainingAnchor(now) {
+    const d = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const diff = d.getDay() === 0 ? 6 : d.getDay() - 1;
+    d.setDate(d.getDate() - diff);
+    return d;
+  }
+
   function getCurrentSlot(now = new Date()) {
-    const monthIdx = Math.min(11, now.getMonth());
-    const dayOfMonth = now.getDate();
-    const weekIdx = Math.min(3, Math.floor((dayOfMonth - 1) / 7));
+    const anchor = getTrainingAnchor(now);
+    const monthIdx = Math.min(11, Math.max(0, anchor.getMonth()));
+    const weekIdx = Math.min(3, Math.floor((anchor.getDate() - 1) / 7));
     const positionKey = SCHEDULE_2026[monthIdx].weeks[weekIdx];
     const dow = now.getDay();
     const rotation = FOCUS_ROTATIONS[monthIdx % 3];
-    let daySlot = -1;
-    if (dow === 1 || dow === 2)      daySlot = 0;
-    else if (dow === 3 || dow === 4) daySlot = 1;
-    else if (dow === 5)              daySlot = 2;
-    const focus = daySlot >= 0 ? rotation[daySlot] : "Ruhetag / Open Mat";
-    return { monthIdx, weekIdx, positionKey, focus, daySlot, rotation, dow, dayOfMonth };
+    // Wochenplan: Mo = MMA Kurs (kein BJJ-Thema), Di / Mi+Do / Fr = rotierende
+    // Phasen, So = reguläre No-Gi-Einheit zum Wochen-Thema, Sa = Ruhetag.
+    let daySlot = -1, dayKey = null, focus;
+    if (dow === 1)                   { dayKey = 'mma'; focus = 'MMA Kurs'; }
+    else if (dow === 2)              { dayKey = 's0'; daySlot = 0; focus = rotation[0]; }
+    else if (dow === 3 || dow === 4) { dayKey = 's1'; daySlot = 1; focus = rotation[1]; }
+    else if (dow === 5)              { dayKey = 's2'; daySlot = 2; focus = rotation[2]; }
+    else if (dow === 0)              { dayKey = 'sun'; focus = 'Reguläre No-Gi-Einheit'; }
+    else                             { focus = 'Ruhetag / Open Mat'; }
+    return { monthIdx, weekIdx, positionKey, focus, daySlot, dayKey, rotation, dow, dayOfMonth: now.getDate(), isMMA: dow === 1 };
   }
 
   function fmtDate(d) {
     return d.toLocaleDateString('de-DE', { day: '2-digit', month: 'long', year: 'numeric' });
+  }
+
+  // ───── Themen des Tages (localStorage, pro Kalendertag) ─────
+  function topicsKey(d) {
+    return `bjj-topics-${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  }
+  function setTopics(text) {
+    document.getElementById('todayTopicsText').textContent = text;
+    document.getElementById('todayTopics').hidden = !text.trim();
+  }
+  function loadTopics(now) {
+    let t = '';
+    try { t = localStorage.getItem(topicsKey(now)) || ''; } catch (e) {}
+    setTopics(t);
   }
 
   // ───── Render Today ─────
@@ -895,18 +1039,23 @@
     const now = new Date();
     const slot = getCurrentSlot(now);
     const pos = POSITIONS[slot.positionKey];
+    const color = slot.isMMA ? MMA_COLOR : pos.color;
 
-    document.documentElement.style.setProperty('--today-color', pos.color);
-    document.documentElement.style.setProperty('--pulse-color', pos.color);
-    document.getElementById('todayCard').style.setProperty('--today-color', pos.color);
+    document.documentElement.style.setProperty('--today-color', color);
+    document.documentElement.style.setProperty('--pulse-color', color);
+    document.getElementById('todayCard').style.setProperty('--today-color', color);
 
-    document.getElementById('todayPosition').textContent = pos.label;
+    document.getElementById('todayPosition').textContent = slot.isMMA ? 'MMA' : pos.label;
     document.getElementById('todayFocus').textContent = slot.focus;
     document.getElementById('todayWeek').textContent =
       `${SCHEDULE_2026[slot.monthIdx].month} · Woche ${slot.weekIdx + 1}`;
+    const extra = document.getElementById('todayExtra');
+    if (slot.isMMA) { extra.hidden = false; extra.textContent = `BJJ-Woche: ${pos.label}`; }
+    else { extra.hidden = true; extra.textContent = ''; }
     document.getElementById('todayWeekday').textContent = WEEKDAY_NAMES[slot.dow];
     document.getElementById('todayDate').textContent = fmtDate(now);
     document.getElementById('footerStamp').textContent = 'Generiert ' + fmtDate(now);
+    loadTopics(now);
 
     return slot;
   }
@@ -963,16 +1112,22 @@
       "Attack":           "Submissions & Übergänge aus der Position",
       "Defense / Escape": "Verteidigen, befreien, Position zurückgewinnen",
     };
-    const WHEN = ["Montag · Dienstag", "Mittwoch · Donnerstag", "Freitag"];
+    const cards = [
+      { key: 'mma', when: 'Montag', focus: 'MMA Kurs', hint: 'Eigener Kurs — unabhängig vom BJJ-Thema', mma: true, tag: '<span class="day__tag day__tag--new">Neu</span>' },
+      { key: 's0',  when: 'Dienstag', focus: slot.rotation[0], hint: HINTS[slot.rotation[0]], tag: '' },
+      { key: 's1',  when: 'Mittwoch · Donnerstag', focus: slot.rotation[1], hint: HINTS[slot.rotation[1]], tag: '' },
+      { key: 's2',  when: 'Freitag', focus: slot.rotation[2], hint: HINTS[slot.rotation[2]], tag: '<span class="day__tag day__tag--gi">Gi</span>' },
+      { key: 'sun', when: 'Sonntag', focus: 'No-Gi BJJ', hint: 'Reguläre Einheit zum Wochen-Thema', tag: '' },
+    ];
     const root = document.getElementById('weekstruct');
-    root.innerHTML = WHEN.map((when, i) => `
-      <div class="day ${i === slot.daySlot ? 'is-today' : ''}">
-        <div class="day__when">${when}</div>
-        <h3 class="day__focus">${slot.rotation[i]}</h3>
-        <div class="day__hint">${HINTS[slot.rotation[i]]}</div>
+    root.innerHTML = cards.map(d => `
+      <div class="day ${d.mma ? 'day--mma' : ''} ${d.key === slot.dayKey ? 'is-today' : ''}">
+        <div class="day__when">${d.when}${d.tag}</div>
+        <h3 class="day__focus">${d.focus}</h3>
+        <div class="day__hint">${d.hint}</div>
       </div>`).join('');
     const sub = document.getElementById('weekstructSub');
-    if (sub) sub.textContent = `Rotiert monatlich · aktuell: ${SCHEDULE_2026[slot.monthIdx].month}`;
+    if (sub) sub.textContent = `Phasen rotieren monatlich · Themenwechsel immer montags · aktuell: ${SCHEDULE_2026[slot.monthIdx].month}`;
   }
 
   // ───── Session Timeline ─────
@@ -1342,7 +1497,7 @@
       }
     });
     document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') closeTechModal();
+      if (e.key === 'Escape') { closeTechModal(); closeShareModal(); }
     });
     // Einfacher Focus-Trap: Tab zirkuliert innerhalb des offenen Modals.
     document.getElementById('techBackdrop').addEventListener('keydown', e => {
@@ -1429,11 +1584,15 @@
   }
 
   async function shareToday() {
-    const btn = document.getElementById('shareBtn');
-    const label = document.getElementById('shareBtnLabel');
-    const origLabel = label.textContent;
+    const btn = document.getElementById('shareConfirm');
+    const label = document.getElementById('shareConfirmLabel');
+    const origLabel = 'Bild teilen';
     btn.disabled = true;
     label.textContent = 'Bild wird erstellt…';
+    const reset = (text, delay, closeAfter) => setTimeout(() => {
+      label.textContent = origLabel; btn.disabled = false;
+      if (closeAfter) closeShareModal();
+    }, delay);
     try {
       const blob = await captureTodayCard();
       if (!blob) throw new Error('Kein Bild generiert');
@@ -1444,7 +1603,7 @@
         try {
           await navigator.share({ files: [file] });
           label.textContent = '✓ Geteilt';
-          setTimeout(() => { label.textContent = origLabel; btn.disabled = false; }, 1800);
+          reset(origLabel, 1000, true);
           return;
         } catch (err) {
           if (err && err.name === 'AbortError') {
@@ -1465,12 +1624,76 @@
       a.remove();
       setTimeout(() => URL.revokeObjectURL(objUrl), 2000);
       label.textContent = '✓ Bild gespeichert';
-      setTimeout(() => { label.textContent = origLabel; btn.disabled = false; }, 2000);
+      reset(origLabel, 1400, true);
     } catch (e) {
       console.error('Share failed:', e);
       label.textContent = 'Fehler — nochmal versuchen';
-      setTimeout(() => { label.textContent = origLabel; btn.disabled = false; }, 2200);
+      reset(origLabel, 2200, false);
     }
+  }
+
+  // ───── Share-Vorschau-Modal ─────
+  function updateSharePreview() {
+    const wrap = document.getElementById('sharePreview');
+    const clone = document.getElementById('todayCard').cloneNode(true);
+    clone.removeAttribute('id');
+    clone.querySelectorAll('[id]').forEach(el => el.removeAttribute('id'));
+    clone.classList.add('capture-mobile');
+    const scaler = document.createElement('div');
+    scaler.className = 'share-preview__scaler';
+    scaler.appendChild(clone);
+    wrap.innerHTML = '';
+    wrap.appendChild(scaler);
+    // Synchron messen (erzwingt Reflow) — rAF ist in Hintergrund-Tabs gedrosselt.
+    const w = wrap.getBoundingClientRect().width || 380;
+    const h = clone.offsetHeight; // vor dem Transform messen (offsetHeight ignoriert transforms)
+    const scale = Math.min(1, w / 380);
+    scaler.style.transformOrigin = 'top left';
+    scaler.style.transform = `translateX(${Math.max(0, (w - 380 * scale) / 2)}px) scale(${scale})`;
+    wrap.style.height = h * scale + 'px';
+  }
+
+  function openShareModal() {
+    const now = new Date();
+    const slot = getCurrentSlot(now);
+    const pos = POSITIONS[slot.positionKey];
+    const color = slot.isMMA ? MMA_COLOR : pos.color;
+    document.querySelector('.share-modal').style.setProperty('--pos-c', color);
+    document.getElementById('shareBackdrop').style.setProperty('--pos-c', color);
+    document.getElementById('shareCtx').textContent = `${WEEKDAY_NAMES[slot.dow]} · ${fmtDate(now)}`;
+    const ta = document.getElementById('shareTopics');
+    try { ta.value = localStorage.getItem(topicsKey(now)) || ''; }
+    catch (e) { ta.value = document.getElementById('todayTopicsText').textContent; }
+    document.getElementById('shareBackdrop').classList.add('open');
+    document.body.classList.add('tech-open');
+    updateSharePreview();
+    ta.focus({ preventScroll: true });
+    document.querySelector('.share-body').scrollTop = 0;
+  }
+
+  function closeShareModal() {
+    const bd = document.getElementById('shareBackdrop');
+    if (!bd.classList.contains('open')) return;
+    bd.classList.remove('open');
+    document.body.classList.remove('tech-open');
+    const btn = document.getElementById('shareBtn');
+    if (btn) btn.focus();
+  }
+
+  function wireShareModal() {
+    document.getElementById('shareBtn').addEventListener('click', openShareModal);
+    document.getElementById('shareClose').addEventListener('click', closeShareModal);
+    document.getElementById('shareCancel').addEventListener('click', closeShareModal);
+    document.getElementById('shareBackdrop').addEventListener('click', e => {
+      if (e.target === e.currentTarget) closeShareModal();
+    });
+    document.getElementById('shareTopics').addEventListener('input', e => {
+      const text = e.target.value;
+      setTopics(text);
+      try { localStorage.setItem(topicsKey(new Date()), text); } catch (err) {}
+      updateSharePreview();
+    });
+    document.getElementById('shareConfirm').addEventListener('click', shareToday);
   }
 
   function boot() {
@@ -1479,7 +1702,7 @@
     renderQuarters(slot);
     renderWeekStruct(slot);
     renderSession();
-    document.getElementById('shareBtn').addEventListener('click', shareToday);
+    wireShareModal();
     wireTechModal();
   }
   boot();
