@@ -988,8 +988,8 @@
   const MMA_COLOR = '#f43f5e';
 
   // Trainingswoche = Mo–So. Das Thema wechselt NUR in der Nacht So→Mo:
-  // Anker ist der Montag der laufenden Woche; Monat/Woche werden vom Anker
-  // abgeleitet, nie vom heutigen Kalendertag.
+  // Anker ist der Montag der laufenden Woche; Monat/Woche werden aus dieser
+  // Woche abgeleitet, nie vom heutigen Kalendertag.
   function getTrainingAnchor(now) {
     const d = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const diff = d.getDay() === 0 ? 6 : d.getDay() - 1;
@@ -997,10 +997,18 @@
     return d;
   }
 
+  // Eine Trainingswoche gehört dem Monat, in dem die meisten ihrer Tage
+  // liegen — das ist genau der Monat ihres Donnerstags. Ohne diese Regel
+  // hängt eine Woche, die am 30./31. startet, den halben neuen Monat noch
+  // am Thema des alten Monats.
+  function getWeekOwner(anchor) {
+    const th = new Date(anchor.getFullYear(), anchor.getMonth(), anchor.getDate() + 3);
+    return { monthIdx: th.getMonth(), weekIdx: Math.min(3, Math.floor((th.getDate() - 1) / 7)) };
+  }
+
   function getCurrentSlot(now = new Date()) {
     const anchor = getTrainingAnchor(now);
-    const monthIdx = Math.min(11, Math.max(0, anchor.getMonth()));
-    const weekIdx = Math.min(3, Math.floor((anchor.getDate() - 1) / 7));
+    const { monthIdx, weekIdx } = getWeekOwner(anchor);
     const positionKey = SCHEDULE_2026[monthIdx].weeks[weekIdx];
     const dow = now.getDay();
     const rotation = FOCUS_ROTATIONS[monthIdx % 3];
